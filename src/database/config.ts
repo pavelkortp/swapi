@@ -2,6 +2,7 @@ import * as process from 'process';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 
+//Call this to read all .env files
 config();
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
