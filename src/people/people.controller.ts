@@ -7,36 +7,41 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
 import { People } from './entities/People';
+import { CreatePeopleDto } from './dto/create-people.dto';
 
 @Controller('people')
 export class PeopleController {
   constructor(private service: PeopleService) {}
 
   @Post()
-  async create(@Body() p: People) {
+  async create(@Body(ValidationPipe) p: CreatePeopleDto): Promise<void> {
     await this.service.create(p);
   }
 
   @Get()
-  async getAll() {
+  async getAll(): Promise<People[]> {
     return await this.service.findAll();
   }
 
-  @Get('id')
-  async getOne(@Param('id', ParseIntPipe) id: number) {
+  @Get(':id')
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<People | null> {
     return await this.service.findOne(id);
   }
 
-  @Patch('id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() p: People) {
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() p: People,
+  ): Promise<void> {
     await this.service.update(id, p);
   }
 
-  @Delete('id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.service.remove(id);
   }
 }

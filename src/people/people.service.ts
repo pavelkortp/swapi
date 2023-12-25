@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { People } from './entities/People';
+import { CreatePeopleDto } from './dto/create-people.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class PeopleService {
@@ -38,8 +40,9 @@ export class PeopleService {
    * Creates new people.
    * @param p new people.
    */
-  async create(p: People): Promise<void> {
-    this.repository.create(p);
+  async create(p: CreatePeopleDto): Promise<People> {
+    const peopleEntity = plainToClass(People, p);
+    return await this.repository.save(peopleEntity);
   }
 
   /**
@@ -48,6 +51,14 @@ export class PeopleService {
    * @param p new people.
    */
   async update(id: number, p: People): Promise<void> {
-    await this.repository.update({ id: p.id }, p);
+    await this.repository.update({ id }, p);
+  }
+
+  /**
+   * Checks if name is not exist in store.
+   * @param name checked value.
+   */
+  public async isUniqueName(name: string): Promise<boolean> {
+    return !(await this.repository.findOneBy({ name: ILike<string>(name) }));
   }
 }
