@@ -11,6 +11,9 @@ export class People {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
+  @Column({ unique: true })
+  name: string;
+
   @Column()
   birth_year: string;
 
@@ -32,9 +35,12 @@ export class People {
   @Column()
   skin_color: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   edited: Date;
 }
