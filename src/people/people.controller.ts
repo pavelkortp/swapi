@@ -12,6 +12,7 @@ import {
 import { PeopleService } from './people.service';
 import { People } from './entities/People';
 import { CreatePeopleDto } from './dto/create-people.dto';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Controller('people')
 export class PeopleController {
@@ -35,7 +36,7 @@ export class PeopleController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() p: People,
+    @Body(ValidationPipe) p: UpdatePeopleDto,
   ): Promise<void> {
     await this.service.update(id, p);
   }

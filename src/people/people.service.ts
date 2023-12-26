@@ -4,6 +4,7 @@ import { ILike, Repository } from 'typeorm';
 import { People } from './entities/People';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Injectable()
 export class PeopleService {
@@ -50,8 +51,10 @@ export class PeopleService {
    * @param id people id.
    * @param p new people.
    */
-  async update(id: number, p: People): Promise<void> {
-    await this.repository.update({ id }, p);
+  async update(id: number, p: UpdatePeopleDto): Promise<void> {
+    const existingPeople = await this.findOne(id);
+    Object.assign(existingPeople, p);
+    console.log(await this.repository.update({ id }, p));
   }
 
   /**
