@@ -4,9 +4,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PeopleModule } from './people/people.module';
 import { dataSourceOptions } from './database/config';
+import { FilmsModule } from './films/films.module';
 
 @Module({
-  imports: [PeopleModule, TypeOrmModule.forRoot(dataSourceOptions)],
+  imports: [
+    PeopleModule,
+    FilmsModule,
+    TypeOrmModule.forRoot(dataSourceOptions),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
