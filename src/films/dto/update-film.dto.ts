@@ -1,4 +1,10 @@
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateFilmDto {
@@ -31,4 +37,9 @@ export class UpdateFilmDto {
   @IsOptional()
   @IsDateString()
   release_date?: Date;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  characters?: string[];
 }

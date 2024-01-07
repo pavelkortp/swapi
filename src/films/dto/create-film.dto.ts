@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsString, Validate } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { UniqueTitleConstraint } from '../validation/unique-title.constraint';
 
 export class CreateFilmDto {
@@ -27,4 +33,8 @@ export class CreateFilmDto {
   @ApiProperty()
   @IsDateString()
   release_date: string;
+
+  @ApiProperty()
+  @IsArray()
+  characters: string[];
 }

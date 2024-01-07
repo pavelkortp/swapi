@@ -17,7 +17,7 @@ export class FilmsService {
    * Returns all films.
    */
   async findAll(): Promise<Film[]> {
-    return this.repository.find();
+    return this.repository.find({ relations: ['characters'] });
   }
 
   /**
@@ -26,7 +26,10 @@ export class FilmsService {
    * @return found film or null.
    */
   async findOne(id: number): Promise<Film | null> {
-    return this.repository.findOneBy({ id });
+    return await this.repository.findOne({
+      where: { id },
+      relations: ['characters'],
+    });
   }
 
   /**
@@ -52,7 +55,8 @@ export class FilmsService {
    * @param f new film.
    */
   async update(id: number, f: UpdateFilmDto): Promise<void> {
-    await this.repository.update({ id }, f);
+    const updated = plainToClass(Film, f);
+    await this.repository.update({ id }, updated);
   }
 
   /**
