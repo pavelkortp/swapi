@@ -5,10 +5,12 @@ import { People } from './entities/People';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
 import { UpdatePeopleDto } from './dto/update-people.dto';
+import { FilmsService } from '../films/films.service';
 
 @Injectable()
 export class PeopleService {
   constructor(
+    private filmsService: FilmsService,
     @InjectRepository(People)
     private repository: Repository<People>,
   ) {}
@@ -17,7 +19,7 @@ export class PeopleService {
    * Returns all people.
    */
   async findAll(): Promise<People[]> {
-    return this.repository.find();
+    return await this.repository.find({ relations: ['films'] });
   }
 
   /**
@@ -26,7 +28,12 @@ export class PeopleService {
    * @return found people or null.
    */
   async findOne(id: number): Promise<People | null> {
-    return this.repository.findOneBy({ id });
+    const f = await this.repository.findOne({
+      where: { id },
+      relations: ['films'],
+    });
+    console.log(f);
+    return f;
   }
 
   /**
@@ -42,7 +49,12 @@ export class PeopleService {
    * @param p new people.
    */
   async create(p: CreatePeopleDto): Promise<People> {
+    const films = await Promise.all(
+      p.films.map(async (id: number) => await this.filmsService.findOne(id)),
+    );
     const peopleEntity = plainToClass(People, p);
+    peopleEntity.films = films;
+    console.log(peopleEntity);
     return await this.repository.save(peopleEntity);
   }
 
@@ -53,8 +65,8 @@ export class PeopleService {
    */
   async update(id: number, p: UpdatePeopleDto): Promise<void> {
     const existingPeople = await this.findOne(id);
-    Object.assign(existingPeople, p);
-    console.log(await this.repository.update({ id }, p));
+    Object.assign(p, existingPeople);
+    console.log(await this.repository.update({ id }, existingPeople));
   }
 
   /**

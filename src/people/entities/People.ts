@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Film } from '../../films/entities/Film';
 
 @Entity('people')
 export class People {
@@ -34,6 +37,10 @@ export class People {
 
   @Column()
   skin_color: string;
+
+  @ManyToMany(() => Film, (film) => film.characters)
+  @JoinTable({ name: 'people_films' })
+  films: Film[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;

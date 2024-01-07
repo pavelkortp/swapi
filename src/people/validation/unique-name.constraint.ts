@@ -2,7 +2,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { PeopleService } from '../people.service';
+import { PeopleService } from '../people.service.js';
 import { Inject, Injectable } from '@nestjs/common';
 
 @ValidatorConstraint({ name: 'isUniqueName', async: true })
