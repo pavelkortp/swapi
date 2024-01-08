@@ -45,5 +45,5 @@ export class UpdatePeopleDto {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  films?: string[];
+  films?: number[];
 }

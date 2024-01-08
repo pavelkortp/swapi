@@ -4,10 +4,12 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
+import { Planet } from '../../planets/entities/Planet';
 
 @Entity('people')
 export class People {
@@ -37,6 +39,10 @@ export class People {
 
   @Column()
   skin_color: string;
+
+  @ManyToOne(() => Planet, (planet) => planet.residents)
+  @JoinTable({ name: 'planets_people' })
+  homeworld: Planet;
 
   @ManyToMany(() => Film, (film) => film.characters)
   @JoinTable({ name: 'people_films' })

@@ -41,5 +41,5 @@ export class UpdateFilmDto {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  characters?: string[];
+  characters?: number[];
 }

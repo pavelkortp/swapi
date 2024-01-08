@@ -4,42 +4,51 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
-import { Planet } from '../../planets/entities/Planet';
 
-@Entity('films')
-export class Film {
+@Entity('planets')
+export class Planet {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
   @Column()
-  title: string;
+  name: string;
 
   @Column()
-  episode_id: number;
+  rotation_period: number;
+  @Column()
+  orbital_period: number;
 
   @Column()
-  opening_crawl: string;
+  diameter: number;
 
   @Column()
-  director: string;
+  climate: string;
 
   @Column()
-  producer: string;
+  gravity: string;
 
-  @CreateDateColumn()
-  release_date: Date;
+  @Column()
+  terrain: string;
 
-  @ManyToMany(() => People, (people) => people.films)
-  @JoinTable({ name: 'people_films' })
-  characters: People[];
+  @Column()
+  surface_water: number;
 
-  @ManyToMany(() => Planet, (planet) => planet.films)
+  @Column()
+  population: string;
+
+  @OneToMany(() => People, (people) => people.homeworld)
+  @JoinTable({ name: 'planets_people' })
+  residents: People[];
+
+  @ManyToMany(() => Film, (film) => film.characters)
   @JoinTable({ name: 'planets_films' })
-  planets: Planet[];
+  films: Film[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
