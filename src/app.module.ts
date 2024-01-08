@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { PeopleModule } from './people/people.module';
 import { dataSourceOptions } from './database/config';
 import { FilmsModule } from './films/films.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PageInterceptor } from './interceptors/page.interceptor';
 
 @Module({
   imports: [
@@ -13,6 +15,9 @@ import { FilmsModule } from './films/films.module';
     TypeOrmModule.forRoot(dataSourceOptions),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_INTERCEPTOR, useClass: PageInterceptor },
+  ],
 })
 export class AppModule {}

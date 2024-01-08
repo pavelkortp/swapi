@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
 import { ILike, Repository } from 'typeorm';
@@ -6,6 +11,7 @@ import { plainToClass } from 'class-transformer';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { PeopleService } from '../people/people.service';
+import { People } from '../people/entities/People';
 
 @Injectable()
 export class FilmsService {
@@ -20,7 +26,7 @@ export class FilmsService {
    * Returns all films.
    */
   async findAll(): Promise<Film[]> {
-    return this.repository.find({ relations: ['characters'] });
+    return this.repository.find({ relations: ['characters', 'planets'] });
   }
 
   /**
@@ -28,11 +34,15 @@ export class FilmsService {
    * @param id film id.
    * @return found film or null.
    */
-  async findOne(id: number): Promise<Film | null> {
-    return await this.repository.findOne({
+  async findOne(id: number): Promise<Film> {
+    const res: Film = await this.repository.findOne({
       where: { id },
-      relations: ['characters'],
+      relations: ['characters', 'planets'],
     });
+    if (!res) {
+      throw new NotFoundException();
+    }
+    return res;
   }
 
   /**
@@ -48,12 +58,13 @@ export class FilmsService {
    * @param f new film.
    */
   async create(f: CreateFilmDto): Promise<Film> {
-    const characters = await Promise.all(
+    const characters: People[] = await Promise.all(
       f.characters.map(
-        async (id: number) => await this.peopleService.findOne(id),
+        async (id: number): Promise<People> =>
+          await this.peopleService.findOne(id),
       ),
     );
-    const filmEntity = plainToClass(Film, f);
+    const filmEntity: Film = plainToClass(Film, f);
     filmEntity.characters = characters;
     return await this.repository.save(filmEntity);
   }
@@ -64,12 +75,13 @@ export class FilmsService {
    * @param f new film.
    */
   async update(id: number, f: UpdateFilmDto): Promise<void> {
-    const characters = await Promise.all(
+    const characters: People[] = await Promise.all(
       f?.characters.map(
-        async (id: number) => await this.peopleService.findOne(id),
+        async (id: number): Promise<People> =>
+          await this.peopleService.findOne(id),
       ),
     );
-    const updated = plainToClass(Film, f);
+    const updated: Film = plainToClass(Film, f);
     if (characters.length > 0) {
       updated.characters = characters;
     }

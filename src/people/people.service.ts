@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { People } from './entities/People';
@@ -28,11 +28,15 @@ export class PeopleService {
    * @param id people id.
    * @return found people or null.
    */
-  async findOne(id: number): Promise<People | null> {
-    return await this.repository.findOne({
+  async findOne(id: number): Promise<People> {
+    const res: People | null = await this.repository.findOne({
       where: { id },
       relations: ['films', 'homeworld'],
     });
+    if (!res) {
+      throw new NotFoundException();
+    }
+    return res;
   }
 
   /**
@@ -49,11 +53,13 @@ export class PeopleService {
    */
   async create(p: CreatePeopleDto): Promise<People> {
     const films: Film[] = await Promise.all(
-      p.films.map(async (id: number) => await this.filmsService.findOne(id)),
+      p.films.map(
+        async (id: number): Promise<Film> =>
+          await this.filmsService.findOne(id),
+      ),
     );
     const peopleEntity: People = plainToClass(People, p);
     peopleEntity.films = films;
-    console.log(peopleEntity);
     return await this.repository.save(peopleEntity);
   }
 
@@ -63,7 +69,7 @@ export class PeopleService {
    * @param p new people.
    */
   async update(id: number, p: UpdatePeopleDto): Promise<void> {
-    const existingPeople = await this.findOne(id);
+    const existingPeople: People = await this.findOne(id);
     Object.assign(p, existingPeople);
     console.log(await this.repository.update({ id }, existingPeople));
   }

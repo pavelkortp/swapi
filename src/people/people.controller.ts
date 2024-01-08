@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
@@ -15,7 +14,7 @@ import { People } from './entities/People';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { UpdatePeopleDto } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ManyPeopleInterceptor } from './interceptor/many-people.interceptor';
+import { GetPeopleDto } from './dto/get-people.dto';
 
 @ApiTags(`people`)
 @Controller('people')
@@ -28,13 +27,13 @@ export class PeopleController {
   }
 
   @Get()
-  @UseInterceptors(ManyPeopleInterceptor)
-  async getAll(): Promise<People[]> {
-    return await this.service.findAll();
+  async getAll(): Promise<GetPeopleDto[]> {
+    const people = await this.service.findAll();
+    return people.map((p: People) => new GetPeopleDto(p));
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<People | null> {
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<People> {
     return await this.service.findOne(id);
   }
 

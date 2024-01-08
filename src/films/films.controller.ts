@@ -31,7 +31,7 @@ export class FilmsController {
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<Film | null> {
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<Film> {
     return await this.service.findOne(id);
   }
 

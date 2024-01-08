@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsInt,
   IsNumberString,
   IsOptional,
   IsString,
@@ -44,6 +45,7 @@ export class CreatePeopleDto {
 
   @ApiProperty()
   @IsArray()
+  @IsInt({ each: true })
   @IsOptional()
   films: number[];
 }

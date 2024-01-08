@@ -1,4 +1,10 @@
-import { IsArray, IsNumberString, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePeopleDto {
@@ -43,7 +49,8 @@ export class UpdatePeopleDto {
   skin_color?: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
   films?: number[];
 }

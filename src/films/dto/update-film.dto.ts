@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsDateString,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -39,7 +40,8 @@ export class UpdateFilmDto {
   release_date?: Date;
 
   @ApiProperty()
-  @IsOptional()
   @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
   characters?: number[];
 }

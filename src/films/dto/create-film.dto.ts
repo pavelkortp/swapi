@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsDateString,
+  IsInt,
   IsNumber,
+  IsOptional,
   IsString,
   Validate,
 } from 'class-validator';
@@ -36,5 +38,7 @@ export class CreateFilmDto {
 
   @ApiProperty()
   @IsArray()
-  characters: string[];
+  @IsInt({ each: true })
+  @IsOptional()
+  characters: number[];
 }
