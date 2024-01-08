@@ -81,11 +81,12 @@ export class FilmsService {
           await this.peopleService.findOne(id),
       ),
     );
-    const updated: Film = plainToClass(Film, f);
+    const existingFilm: Film = await this.findOne(id);
+    Object.assign(existingFilm, f);
     if (characters.length > 0) {
-      updated.characters = characters;
+      existingFilm.characters = characters;
     }
-    await this.repository.update({ id }, updated);
+    await this.repository.save(existingFilm, { reload: true });
   }
 
   /**

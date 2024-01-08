@@ -69,9 +69,16 @@ export class PeopleService {
    * @param p new people.
    */
   async update(id: number, p: UpdatePeopleDto): Promise<void> {
+    const films: Film[] = await Promise.all(
+      p?.films.map(
+        async (id: number): Promise<Film> =>
+          await this.filmsService.findOne(id),
+      ) || [],
+    );
     const existingPeople: People = await this.findOne(id);
-    Object.assign(p, existingPeople);
-    console.log(await this.repository.update({ id }, existingPeople));
+    Object.assign(existingPeople, p);
+    existingPeople.films = films;
+    await this.repository.save(existingPeople, { reload: true });
   }
 
   /**
