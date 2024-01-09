@@ -9,10 +9,10 @@ import {
   Post,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateFilmDto } from './dto/create-film.dto';
+import { CreateFilmDTO } from './dto/create-film.dto';
 import { FilmsService } from './films.service';
 import { Film } from './entities/Film';
-import { UpdateFilmDto } from './dto/update-film.dto';
+import { UpdateFilmDTO } from './dto/update-film.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('films')
@@ -21,7 +21,7 @@ export class FilmsController {
   constructor(private service: FilmsService) {}
 
   @Post()
-  async create(@Body(ValidationPipe) f: CreateFilmDto): Promise<void> {
+  async create(@Body(ValidationPipe) f: CreateFilmDTO): Promise<void> {
     await this.service.create(f);
   }
 
@@ -38,7 +38,7 @@ export class FilmsController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) f: UpdateFilmDto,
+    @Body(ValidationPipe) f: UpdateFilmDTO,
   ): Promise<void> {
     await this.service.update(id, f);
   }

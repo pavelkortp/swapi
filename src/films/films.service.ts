@@ -8,8 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
 import { ILike, Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
-import { CreateFilmDto } from './dto/create-film.dto';
-import { UpdateFilmDto } from './dto/update-film.dto';
+import { CreateFilmDTO } from './dto/create-film.dto';
+import { UpdateFilmDTO } from './dto/update-film.dto';
 import { PeopleService } from '../people/people.service';
 import { People } from '../people/entities/People';
 
@@ -26,7 +26,9 @@ export class FilmsService {
    * Returns all films.
    */
   async findAll(): Promise<Film[]> {
-    return this.repository.find({ relations: ['characters', 'planets'] });
+    return this.repository.find({
+      relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
+    });
   }
 
   /**
@@ -37,7 +39,7 @@ export class FilmsService {
   async findOne(id: number): Promise<Film> {
     const res: Film = await this.repository.findOne({
       where: { id },
-      relations: ['characters', 'planets'],
+      relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
     });
     if (!res) {
       throw new NotFoundException();
@@ -57,7 +59,7 @@ export class FilmsService {
    * Creates new films.
    * @param f new film.
    */
-  async create(f: CreateFilmDto): Promise<Film> {
+  async create(f: CreateFilmDTO): Promise<Film> {
     const characters: People[] = await Promise.all(
       f.characters.map(
         async (id: number): Promise<People> =>
@@ -74,7 +76,7 @@ export class FilmsService {
    * @param id film id.
    * @param f new film.
    */
-  async update(id: number, f: UpdateFilmDto): Promise<void> {
+  async update(id: number, f: UpdateFilmDTO): Promise<void> {
     const characters: People[] = await Promise.all(
       f?.characters.map(
         async (id: number): Promise<People> =>

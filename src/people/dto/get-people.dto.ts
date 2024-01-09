@@ -2,7 +2,7 @@ import { People } from '../entities/People';
 import { ApiProperty } from '@nestjs/swagger';
 import { Film } from '../../films/entities/Film';
 
-export class GetPeopleDto {
+export class GetPeopleDTO {
   @ApiProperty()
   url: string;
 

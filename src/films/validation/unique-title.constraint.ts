@@ -5,7 +5,7 @@ import {
 import { FilmsService } from '../films.service';
 import { Inject, Injectable } from '@nestjs/common';
 
-@ValidatorConstraint({ name: 'isUniqueName', async: true })
+@ValidatorConstraint({ name: 'isUniqueTitle', async: true })
 @Injectable()
 export class UniqueTitleConstraint implements ValidatorConstraintInterface {
   constructor(@Inject(FilmsService) private filmsService: FilmsService) {}
