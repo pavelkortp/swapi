@@ -13,4 +13,10 @@ declare interface ResponsePage<E> {
   results: E[];
 }
 
-declare type StarWarsEntity = Planet | Film | People | Starship | Specie;
+declare type StarWarsEntity =
+  | Planet
+  | Film
+  | People
+  | Starship
+  | Specie
+  | Vehicle;

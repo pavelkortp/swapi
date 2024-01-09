@@ -12,6 +12,7 @@ import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
+import { Vehicle } from '../../vehicles/entities/Vehicle';
 
 @Entity('people')
 export class People {
@@ -53,6 +54,10 @@ export class People {
   @ManyToMany(() => Specie, (s: Specie) => s.people)
   @JoinTable({ name: 'species_people' })
   species: Specie[];
+
+  @ManyToMany(() => Vehicle, (v: Vehicle) => v.pilots)
+  @JoinTable({ name: 'vehicles_people' })
+  vehicles: Vehicle[];
 
   @ManyToMany(() => Starship, (s: Starship) => s.pilots)
   @JoinTable({ name: 'starships_people' })
