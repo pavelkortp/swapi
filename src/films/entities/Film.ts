@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { People } from '../../people/entities/People';
 import { Planet } from '../../planets/entities/Planet';
+import { Specie } from '../../species/entities/Specie';
 
 @Entity('films')
 export class Film {
@@ -40,6 +41,10 @@ export class Film {
   @ManyToMany(() => Planet, (planet) => planet.films)
   @JoinTable({ name: 'planets_films' })
   planets: Planet[];
+
+  @ManyToMany(() => Specie, (specie) => specie.films)
+  @JoinTable({ name: 'species_films' })
+  species: Specie[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;

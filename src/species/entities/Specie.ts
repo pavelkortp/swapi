@@ -8,50 +8,53 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { People } from '../../people/entities/People';
 import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
-import { Specie } from '../../species/entities/Specie';
 
-@Entity('people')
-export class People {
+@Entity('species')
+export class Specie {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column()
-  birth_year: string;
+  classification: string;
 
   @Column()
-  eye_color: string;
+  designation: string;
 
   @Column()
-  gender: string;
+  average_height: string;
 
   @Column()
-  hair_color: string;
+  skin_colors: string;
 
   @Column()
-  height: string;
+  hair_colors: string;
 
   @Column()
-  mass: string;
+  eye_colors: string;
 
   @Column()
-  skin_color: string;
+  average_lifespan: number;
 
-  @ManyToOne(() => Planet, (planet) => planet.residents)
-  @JoinTable({ name: 'planets_people' })
+  @ManyToOne(() => Planet)
+  @JoinTable({ name: 'planets' })
   homeworld: Planet;
 
-  @ManyToMany(() => Film, (film) => film.characters)
-  @JoinTable({ name: 'people_films' })
-  films: Film[];
+  @Column()
+  language: string;
 
-  @ManyToMany(() => Specie, (specie) => specie.people)
+  @ManyToMany(() => People, (people) => people.species)
   @JoinTable({ name: 'species_people' })
-  species: Specie[];
+  people: People[];
+
+  @ManyToMany(() => Film, (film) => film.species)
+  @JoinTable({ name: 'species_films' })
+  films: Film[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
