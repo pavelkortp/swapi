@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { People } from './entities/People';
-import { CreatePeopleDto } from './dto/create-people.dto';
+import { CreatePeopleDTO } from './dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
-import { UpdatePeopleDto } from './dto/update-people.dto';
+import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/Film';
 
@@ -20,7 +20,9 @@ export class PeopleService {
    * Returns all people.
    */
   async findAll(): Promise<People[]> {
-    return await this.repository.find({ relations: ['films'] });
+    return await this.repository.find({
+      relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
+    });
   }
 
   /**
@@ -31,7 +33,7 @@ export class PeopleService {
   async findOne(id: number): Promise<People> {
     const res: People | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld'],
+      relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
     });
     if (!res) {
       throw new NotFoundException();
@@ -51,7 +53,7 @@ export class PeopleService {
    * Creates new people.
    * @param p new people.
    */
-  async create(p: CreatePeopleDto): Promise<People> {
+  async create(p: CreatePeopleDTO): Promise<People> {
     const films: Film[] = await Promise.all(
       p.films.map(
         async (id: number): Promise<Film> =>
@@ -68,7 +70,7 @@ export class PeopleService {
    * @param id people id.
    * @param p new people.
    */
-  async update(id: number, p: UpdatePeopleDto): Promise<void> {
+  async update(id: number, p: UpdatePeopleDTO): Promise<void> {
     const films: Film[] = await Promise.all(
       p?.films.map(
         async (id: number): Promise<Film> =>

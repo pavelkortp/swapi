@@ -9,36 +9,37 @@ import {
   Post,
   ValidationPipe,
 } from '@nestjs/common';
-import { PeopleService } from './people.service';
-import { People } from './entities/People';
-import { CreatePeopleDTO } from './dto/create-people.dto';
-import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags(`people`)
-@Controller('people')
-export class PeopleController {
-  constructor(private service: PeopleService) {}
+import { PlanetsService } from './planets.service';
+import { Planet } from './entities/Planet';
+import { CreatePlanetDTO } from './dto/create-planet.dto';
+import { UpdatePlanetDTO } from './dto/update-planet.dto';
+
+@ApiTags('planets')
+@Controller('planets')
+export class PlanetsController {
+  constructor(private service: PlanetsService) {}
 
   @Post()
-  async create(@Body(ValidationPipe) p: CreatePeopleDTO): Promise<void> {
+  async create(@Body(ValidationPipe) p: CreatePlanetDTO): Promise<void> {
     await this.service.create(p);
   }
 
   @Get()
-  async getAll(): Promise<People[]> {
+  async getAll(): Promise<Planet[]> {
     return await this.service.findAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<People> {
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<Planet> {
     return await this.service.findOne(id);
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) p: UpdatePeopleDTO,
+    @Body(ValidationPipe) p: UpdatePlanetDTO,
   ): Promise<void> {
     await this.service.update(id, p);
   }

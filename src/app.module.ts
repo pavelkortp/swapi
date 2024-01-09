@@ -7,9 +7,11 @@ import { dataSourceOptions } from './database/config';
 import { FilmsModule } from './films/films.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PageInterceptor } from './interceptors/page.interceptor';
+import { PlanetsModule } from './planets/planets.module';
 
 @Module({
   imports: [
+    PlanetsModule,
     PeopleModule,
     FilmsModule,
     TypeOrmModule.forRoot(dataSourceOptions),

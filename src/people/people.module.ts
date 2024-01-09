@@ -9,11 +9,7 @@ import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/Film';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([People]),
-    TypeOrmModule.forFeature([Film]),
-    FilmsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([People, Film]), FilmsModule],
   controllers: [PeopleController],
   providers: [PeopleService, UniqueNameConstraint, FilmsService],
 })
