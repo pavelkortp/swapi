@@ -48,11 +48,11 @@ export class Specie {
   @Column()
   language: string;
 
-  @ManyToMany(() => People, (people) => people.species)
+  @ManyToMany(() => People, (p: People) => p.species)
   @JoinTable({ name: 'species_people' })
   people: People[];
 
-  @ManyToMany(() => Film, (film) => film.species)
+  @ManyToMany(() => Film, (f: Film) => f.species)
   @JoinTable({ name: 'species_films' })
   films: Film[];
 

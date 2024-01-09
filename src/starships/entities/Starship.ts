@@ -4,50 +4,62 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
 
-@Entity('planets')
-export class Planet {
+@Entity('starships')
+export class Starship {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column()
-  rotation_period: number;
-  @Column()
-  orbital_period: number;
+  model: string;
 
   @Column()
-  diameter: number;
+  manufacturer: string;
 
   @Column()
-  climate: string;
+  cost_in_credits: string;
 
   @Column()
-  gravity: string;
+  length: string;
 
   @Column()
-  terrain: string;
+  max_atmosphering_speed: string;
 
   @Column()
-  surface_water: number;
+  crew: string;
 
   @Column()
-  population: string;
+  passengers: string;
 
-  @OneToMany(() => People, (p: People) => p.homeworld)
-  @JoinTable({ name: 'planets_people' })
-  residents: People[];
+  @Column()
+  cargo_capacity: string;
 
-  @ManyToMany(() => Film, (f: Film) => f.characters)
-  @JoinTable({ name: 'planets_films' })
+  @Column()
+  consumables: string;
+
+  @Column()
+  hyperdrive_rating: string;
+
+  @Column()
+  MGLT: string;
+
+  @Column()
+  starship_class: string;
+
+  @ManyToMany(() => People, (p: People) => p.starships)
+  @JoinTable({ name: 'starships_people' })
+  pilots: People[];
+
+  @ManyToMany(() => Film, (f: Film) => f.starships)
+  @JoinTable({ name: 'starships_films' })
   films: Film[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })

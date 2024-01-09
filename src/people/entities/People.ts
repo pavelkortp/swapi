@@ -11,6 +11,7 @@ import {
 import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
+import { Starship } from '../../starships/entities/Starship';
 
 @Entity('people')
 export class People {
@@ -41,17 +42,21 @@ export class People {
   @Column()
   skin_color: string;
 
-  @ManyToOne(() => Planet, (planet) => planet.residents)
+  @ManyToOne(() => Planet, (p: Planet) => p.residents)
   @JoinTable({ name: 'planets_people' })
   homeworld: Planet;
 
-  @ManyToMany(() => Film, (film) => film.characters)
+  @ManyToMany(() => Film, (f: Film) => f.characters)
   @JoinTable({ name: 'people_films' })
   films: Film[];
 
-  @ManyToMany(() => Specie, (specie) => specie.people)
+  @ManyToMany(() => Specie, (s: Specie) => s.people)
   @JoinTable({ name: 'species_people' })
   species: Specie[];
+
+  @ManyToMany(() => Starship, (s: Starship) => s.pilots)
+  @JoinTable({ name: 'starships_people' })
+  starships: Starship[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;

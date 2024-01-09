@@ -10,6 +10,7 @@ import {
 import { People } from '../../people/entities/People';
 import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
+import { Starship } from '../../starships/entities/Starship';
 
 @Entity('films')
 export class Film {
@@ -34,15 +35,19 @@ export class Film {
   @CreateDateColumn()
   release_date: Date;
 
-  @ManyToMany(() => People, (people) => people.films)
+  @ManyToMany(() => People, (p: People) => p.films)
   @JoinTable({ name: 'people_films' })
   characters: People[];
 
-  @ManyToMany(() => Planet, (planet) => planet.films)
+  @ManyToMany(() => Planet, (p: Planet) => p.films)
   @JoinTable({ name: 'planets_films' })
   planets: Planet[];
 
-  @ManyToMany(() => Specie, (specie) => specie.films)
+  @ManyToMany(() => Starship, (s: Starship) => s.films)
+  @JoinTable({ name: 'starships_films' })
+  starships: Starship[];
+
+  @ManyToMany(() => Specie, (s: Specie) => s.films)
   @JoinTable({ name: 'species_films' })
   species: Specie[];
 
