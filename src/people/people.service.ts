@@ -7,6 +7,9 @@ import { plainToClass } from 'class-transformer';
 import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/Film';
+import { ITEMS_PER_PAGE } from '../app.service';
+import { GetPeopleDTO } from './dto/get-people.dto';
+import { Page } from '../declarations';
 
 @Injectable()
 export class PeopleService {
@@ -19,10 +22,19 @@ export class PeopleService {
   /**
    * Returns all people.
    */
-  async findAll(): Promise<People[]> {
-    return await this.repository.find({
+  async findAll(page: number): Promise<Page<GetPeopleDTO>> {
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const [items, total] = await this.repository.findAndCount({
+      order: { created: 'DESC' },
+      skip,
+      take: ITEMS_PER_PAGE,
       relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
     });
+    return {
+      total,
+      items: items.map((p: People) => new GetPeopleDTO(p)),
+      page,
+    };
   }
 
   /**
@@ -77,7 +89,7 @@ export class PeopleService {
           await this.filmsService.findOne(id),
       ) || [],
     );
-    const existingPeople: People = await this.findOne(id);
+    const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
     existingPeople.films = films;
     await this.repository.save(existingPeople, { reload: true });

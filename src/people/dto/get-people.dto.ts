@@ -1,11 +1,12 @@
 import { People } from '../entities/People';
 import { ApiProperty } from '@nestjs/swagger';
 import { Film } from '../../films/entities/Film';
+import { EntityName } from '../../declarations';
+import { Specie } from '../../species/entities/Specie';
+import { Vehicle } from '../../vehicles/entities/Vehicle';
+import { Starship } from '../../starships/entities/Starship';
 
 export class GetPeopleDTO {
-  @ApiProperty()
-  url: string;
-
   @ApiProperty()
   name: string;
 
@@ -31,13 +32,28 @@ export class GetPeopleDTO {
   skin_color: string;
 
   @ApiProperty()
+  homeworld: string;
+
+  @ApiProperty()
   films: string[];
+
+  @ApiProperty()
+  species: string[];
+
+  @ApiProperty()
+  vehicles: string[];
+
+  @ApiProperty()
+  starships: string[];
 
   @ApiProperty()
   created: Date;
 
   @ApiProperty()
   edited: Date;
+
+  @ApiProperty()
+  url: string;
 
   constructor(p: People) {
     this.name = p.name;
@@ -48,7 +64,17 @@ export class GetPeopleDTO {
     this.height = p.height;
     this.mass = p.mass;
     this.skin_color = p.skin_color;
-    this.films = p.films.map((e: Film) => this.toLink('films', e.id));
+    this.homeworld = p.homeworld
+      ? this.toLink('planets', p.homeworld.id)
+      : 'null';
+    this.films = p.films.map((f: Film) => this.toLink('films', f.id));
+    this.species = p.species.map((s: Specie) => this.toLink('species', s.id));
+    this.vehicles = p.vehicles.map((v: Vehicle) =>
+      this.toLink('vehicles', v.id),
+    );
+    this.vehicles = p.starships.map((s: Starship) =>
+      this.toLink('starships', s.id),
+    );
     this.created = p.created;
     this.edited = p.edited;
     this.url = `http://localhost:3000/api/people/${p.id}`;

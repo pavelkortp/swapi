@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
@@ -14,6 +16,8 @@ import { People } from './entities/People';
 import { CreatePeopleDTO } from './dto/create-people.dto';
 import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Page } from '../declarations';
+import { GetPeopleDTO } from './dto/get-people.dto';
 
 @ApiTags(`people`)
 @Controller('people')
@@ -26,8 +30,10 @@ export class PeopleController {
   }
 
   @Get()
-  async getAll(): Promise<People[]> {
-    return await this.service.findAll();
+  async getAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ): Promise<Page<GetPeopleDTO>> {
+    return await this.service.findAll(page);
   }
 
   @Get(':id')

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+export const ITEMS_PER_PAGE = 10;
 @Injectable()
 export class AppService {
   getHello() {
