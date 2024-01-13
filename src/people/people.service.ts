@@ -23,7 +23,7 @@ export class PeopleService {
    * Returns all people.
    */
   async findAll(page: number): Promise<Page<GetPeopleDTO>> {
-    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const skip: number = (page - 1) * ITEMS_PER_PAGE;
     const [items, total] = await this.repository.findAndCount({
       order: { created: 'DESC' },
       skip,

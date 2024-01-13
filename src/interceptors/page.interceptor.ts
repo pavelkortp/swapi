@@ -9,7 +9,13 @@ import { ITEMS_PER_PAGE } from '../app.service';
 import { Page, ResponsePage, StarWarsEntity } from '../declarations';
 
 @Injectable()
-export class PageInterceptor implements NestInterceptor {
+export class PageInterceptor
+  implements
+    NestInterceptor<
+      Page<StarWarsEntity> | StarWarsEntity,
+      ResponsePage<StarWarsEntity> | StarWarsEntity
+    >
+{
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
@@ -19,6 +25,7 @@ export class PageInterceptor implements NestInterceptor {
         (
           data: Page<StarWarsEntity> | StarWarsEntity,
         ): ResponsePage<StarWarsEntity> | StarWarsEntity => {
+          console.log(context.switchToHttp().getRequest().query);
           if (!('page' in data)) return data;
           const nextPage: number =
             data.page * ITEMS_PER_PAGE < data.total ? data.page + 1 : null;

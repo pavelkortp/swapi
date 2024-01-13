@@ -17,6 +17,7 @@ import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Page } from '../declarations';
 import { GetPeopleDTO } from './dto/get-people.dto';
+import { People } from './entities/People';
 
 @ApiTags(`people`)
 @Controller('people')
@@ -37,7 +38,8 @@ export class PeopleController {
 
   @Get(':id')
   async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDTO> {
-    return new GetPeopleDTO(await this.service.findOne(id));
+    const p: People = await this.service.findOne(id);
+    return new GetPeopleDTO(p);
   }
 
   @Patch(':id')
