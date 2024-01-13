@@ -51,16 +51,9 @@ export class PlanetsService {
    * Creates new Planet.
    * @param p new Planet.
    */
-  async create(p: CreatePlanetDTO): Promise<People> {
-    // const films: Film[] = await Promise.all(
-    //   p.films.map(
-    //     async (id: number): Promise<Film> =>
-    //       await this.filmsService.findOne(id),
-    //   ),
-    // );
-    const peopleEntity: People = plainToClass(People, p);
-    // peopleEntity.films = films;
-    return await this.repository.save(peopleEntity);
+  async create(p: CreatePlanetDTO): Promise<void> {
+    const planet: Planet = plainToClass(Planet, p);
+    await this.repository.save(p);
   }
 
   /**

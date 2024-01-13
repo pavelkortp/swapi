@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
 import { ILike, Repository } from 'typeorm';
@@ -41,9 +36,9 @@ export class FilmsService {
       where: { id },
       relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
     });
-    if (!res) {
-      throw new NotFoundException();
-    }
+    // if (!res) {
+    //   throw new NotFoundException();
+    // }
     return res;
   }
 

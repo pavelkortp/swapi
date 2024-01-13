@@ -26,6 +26,7 @@ export class PageInterceptor
           data: Page<StarWarsEntity> | StarWarsEntity,
         ): ResponsePage<StarWarsEntity> | StarWarsEntity => {
           console.log(context.switchToHttp().getRequest().query);
+          if (!data) return;
           if (!('page' in data)) return data;
           const nextPage: number =
             data.page * ITEMS_PER_PAGE < data.total ? data.page + 1 : null;
