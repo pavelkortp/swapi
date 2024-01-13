@@ -12,7 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { People } from './entities/People';
 import { CreatePeopleDTO } from './dto/create-people.dto';
 import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -37,8 +36,8 @@ export class PeopleController {
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<People> {
-    return await this.service.findOne(id);
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDTO> {
+    return new GetPeopleDTO(await this.service.findOne(id));
   }
 
   @Patch(':id')
