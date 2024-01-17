@@ -1,12 +1,4 @@
-import {
-  IsArray,
-  IsInt,
-  IsNumber,
-  IsNumberString,
-  IsOptional,
-  IsString,
-  Validate,
-} from 'class-validator';
+import { IsNumberString, IsString, Validate } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -43,33 +35,4 @@ export class CreatePeopleDTO {
   @ApiProperty()
   @IsString()
   skin_color: string;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  homeworld: number;
-
-  @ApiProperty()
-  @IsArray()
-  @IsInt({ each: true })
-  @IsOptional()
-  films: number[];
-
-  @ApiProperty()
-  @IsArray()
-  @IsInt({ each: true })
-  @IsOptional()
-  species: number[];
-
-  @ApiProperty()
-  @IsArray()
-  @IsInt({ each: true })
-  @IsOptional()
-  vehicles: number[];
-
-  @ApiProperty()
-  @IsArray()
-  @IsInt({ each: true })
-  @IsOptional()
-  starships: number[];
 }
