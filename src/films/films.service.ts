@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
 import { ILike, Repository } from 'typeorm';
@@ -7,6 +12,10 @@ import { CreateFilmDTO } from './dto/create-film.dto';
 import { UpdateFilmDTO } from './dto/update-film.dto';
 import { PeopleService } from '../people/people.service';
 import { People } from '../people/entities/People';
+import { ITEMS_PER_PAGE } from '../app.service';
+import { GetPeopleDTO } from '../people/dto/get-people.dto';
+import { Page } from '../declarations';
+import { GetFilmDTO } from './dto/get-film.dto';
 
 @Injectable()
 export class FilmsService {
@@ -20,10 +29,19 @@ export class FilmsService {
   /**
    * Returns all films.
    */
-  async findAll(): Promise<Film[]> {
-    return this.repository.find({
+  async findAll(page: number): Promise<Page<GetFilmDTO>> {
+    const skip: number = (page - 1) * ITEMS_PER_PAGE;
+    const [items, total] = await this.repository.findAndCount({
+      order: { created: 'DESC' },
+      skip,
+      take: ITEMS_PER_PAGE,
       relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
     });
+    return {
+      total,
+      items: items.map((f: Film) => new GetFilmDTO(f)),
+      page,
+    };
   }
 
   /**
@@ -36,9 +54,9 @@ export class FilmsService {
       where: { id },
       relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
     });
-    // if (!res) {
-    //   throw new NotFoundException();
-    // }
+    if (!res) {
+      throw new NotFoundException();
+    }
     return res;
   }
 
@@ -55,17 +73,11 @@ export class FilmsService {
    * @param f new film.
    */
   async create(f: CreateFilmDTO): Promise<Film> {
-    const characters: People[] = await Promise.all(
-      f.characters.map(
-        async (id: number): Promise<People> =>
-          await this.peopleService.findOne(id),
-      ),
-    );
     const filmEntity: Film = plainToClass(Film, f);
-    filmEntity.characters = characters;
     return await this.repository.save(filmEntity);
   }
 
+  // FIXME
   /**
    * Updates film, by changing exists on current.
    * @param id film id.
