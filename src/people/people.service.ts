@@ -14,6 +14,7 @@ import { Page } from '../declarations';
 @Injectable()
 export class PeopleService {
   constructor(
+    // private speciesService: SpeciesService,
     private filmsService: FilmsService,
     @InjectRepository(People)
     private repository: Repository<People>,
@@ -45,7 +46,7 @@ export class PeopleService {
   async findOne(id: number): Promise<People> {
     const res: People | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
+      relations: ['films', 'homeworld', 'people', 'starships', 'species'],
     });
     if (!res) {
       throw new NotFoundException();
@@ -66,17 +67,11 @@ export class PeopleService {
    * @param p new people.
    */
   async create(p: CreatePeopleDTO): Promise<People> {
-    const films: Film[] = await Promise.all(
-      p.films.map(
-        async (id: number): Promise<Film> =>
-          await this.filmsService.findOne(id),
-      ),
-    );
     const peopleEntity: People = plainToClass(People, p);
-    peopleEntity.films = films;
     return await this.repository.save(peopleEntity);
   }
 
+  // FIXME
   /**
    * Updates people, by changing exists on current.
    * @param id people id.

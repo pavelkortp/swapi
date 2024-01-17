@@ -8,12 +8,14 @@ import { FilmsModule } from './films/films.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PageInterceptor } from './interceptors/page.interceptor';
 import { PlanetsModule } from './planets/planets.module';
+import { SpeciesModule } from './species/species.module';
 
 @Module({
   imports: [
     PlanetsModule,
     PeopleModule,
     FilmsModule,
+    SpeciesModule,
     TypeOrmModule.forRoot(dataSourceOptions),
   ],
   controllers: [AppController],
