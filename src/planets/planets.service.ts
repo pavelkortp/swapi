@@ -6,6 +6,10 @@ import { People } from '../people/entities/People';
 import { plainToClass } from 'class-transformer';
 import { UpdatePlanetDTO } from './dto/update-planet.dto';
 import { CreatePlanetDTO } from './dto/create-planet.dto';
+import { Page } from '../declarations';
+import { GetPlanetDTO } from './dto/get-planet.dto';
+import { ITEMS_PER_PAGE } from '../app.service';
+import { GetPeopleDTO } from '../people/dto/get-people.dto';
 
 @Injectable()
 export class PlanetsService {
@@ -15,12 +19,22 @@ export class PlanetsService {
   ) {}
 
   /**
-   * Returns all Planets.
+   * Returns all Planets by page.
+   * @param page page from planets list
    */
-  async findAll(): Promise<Planet[]> {
-    return await this.repository.find({
+  async findAll(page: number): Promise<Page<GetPlanetDTO>> {
+    const skip: number = (page - 1) * ITEMS_PER_PAGE;
+    const [items, total] = await this.repository.findAndCount({
+      order: { created: 'DESC' },
+      skip,
+      take: ITEMS_PER_PAGE,
       relations: ['residents', 'films'],
     });
+    return {
+      total,
+      items: items.map((p: Planet) => new GetPlanetDTO(p)),
+      page,
+    };
   }
 
   /**
@@ -53,9 +67,10 @@ export class PlanetsService {
    */
   async create(p: CreatePlanetDTO): Promise<void> {
     const planet: Planet = plainToClass(Planet, p);
-    await this.repository.save(p);
+    await this.repository.save(planet);
   }
 
+  /// FIXME
   /**
    * Updates people, by changing exists on current.
    * @param id people id.

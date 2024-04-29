@@ -1,20 +1,23 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { PlanetsService } from './planets.service';
-import { Planet } from './entities/Planet';
 import { CreatePlanetDTO } from './dto/create-planet.dto';
 import { UpdatePlanetDTO } from './dto/update-planet.dto';
+import { Page } from '../declarations';
+import { GetPlanetDTO } from './dto/get-planet.dto';
 
 @ApiTags('planets')
 @Controller('planets')
@@ -27,13 +30,15 @@ export class PlanetsController {
   }
 
   @Get()
-  async getAll(): Promise<Planet[]> {
-    return await this.service.findAll();
+  async getAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ): Promise<Page<GetPlanetDTO>> {
+    return await this.service.findAll(page);
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<Planet> {
-    return await this.service.findOne(id);
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPlanetDTO> {
+    return new GetPlanetDTO(await this.service.findOne(id));
   }
 
   @Patch(':id')
