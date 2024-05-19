@@ -7,10 +7,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors();
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder().setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);

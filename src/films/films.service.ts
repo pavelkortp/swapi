@@ -1,27 +1,17 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
 import { ILike, Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
 import { CreateFilmDTO } from './dto/create-film.dto';
 import { UpdateFilmDTO } from './dto/update-film.dto';
-import { PeopleService } from '../people/people.service';
-import { People } from '../people/entities/People';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { GetPeopleDTO } from '../people/dto/get-people.dto';
-import { Page } from '../declarations';
+import { Page, UniqueNameChecker } from '../declarations';
 import { GetFilmDTO } from './dto/get-film.dto';
 
 @Injectable()
-export class FilmsService {
+export class FilmsService implements UniqueNameChecker {
   constructor(
-    @Inject(forwardRef(() => PeopleService))
-    private peopleService: PeopleService,
     @InjectRepository(Film)
     private repository: Repository<Film>,
   ) {}
@@ -31,14 +21,14 @@ export class FilmsService {
    */
   async findAll(page: number): Promise<Page<GetFilmDTO>> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
-    const [items, total] = await this.repository.findAndCount({
+    const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
       skip,
       take: ITEMS_PER_PAGE,
       relations: ['characters', 'planets', 'starships', 'vehicles', 'species'],
     });
     return {
-      total,
+      count,
       items: items.map((f: Film) => new GetFilmDTO(f)),
       page,
     };
@@ -84,25 +74,12 @@ export class FilmsService {
    * @param f new film.
    */
   async update(id: number, f: UpdateFilmDTO): Promise<void> {
-    const characters: People[] = await Promise.all(
-      f?.characters.map(
-        async (id: number): Promise<People> =>
-          await this.peopleService.findOne(id),
-      ),
-    );
     const existingFilm: Film = await this.findOne(id);
     Object.assign(existingFilm, f);
-    if (characters.length > 0) {
-      existingFilm.characters = characters;
-    }
     await this.repository.save(existingFilm, { reload: true });
   }
 
-  /**
-   * Checks if name is not exist in store.
-   * @param title checked value.
-   */
-  public async isUniqueTitle(title: string): Promise<boolean> {
-    return !(await this.repository.findOneBy({ title: ILike<string>(title) }));
+  async isUniqueName(name: string): Promise<boolean> {
+    return !(await this.repository.findOneBy({ title: ILike<string>(name) }));
   }
 }

@@ -4,46 +4,40 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { Page, ResponsePage, StarWarsEntity } from '../declarations';
+import { Page, ResponseDTO } from '../declarations';
 
 @Injectable()
-export class PageInterceptor
-  implements
-    NestInterceptor<
-      Page<StarWarsEntity> | StarWarsEntity,
-      ResponsePage<StarWarsEntity> | StarWarsEntity
-    >
-{
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<ResponsePage<StarWarsEntity> | StarWarsEntity>> {
+export class PageInterceptor implements NestInterceptor<any, any> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
     return next.handle().pipe(
-      map(
-        (
-          data: Page<StarWarsEntity> | StarWarsEntity,
-        ): ResponsePage<StarWarsEntity> | StarWarsEntity => {
-          console.log(context.switchToHttp().getRequest().query);
-          if (!data) return;
-          if (!('page' in data)) return data;
-          const nextPage: number =
-            data.page * ITEMS_PER_PAGE < data.total ? data.page + 1 : null;
-          const prevPage: number = data.page > 1 ? data.page - 1 : null;
-          const url: string = context.switchToHttp().getRequest().url;
-          return {
-            count: data.total.toString(),
-            next: nextPage
-              ? `http://localhost:3000${url}/?page=${nextPage}`
-              : 'null',
-            previous: prevPage
-              ? `http://localhost:3000${url}/?page=${prevPage}`
-              : 'null',
-            results: data.items,
-          };
-        },
-      ),
+      map((response) => {
+        if (response.count) {
+          return processMany(context, response);
+        } else {
+          return response;
+        }
+      }),
     );
   }
 }
+
+// const processOne = async (data: any) => {
+//   return {}
+// }
+
+const processMany = (context: ExecutionContext, o: Page<ResponseDTO>) => {
+  const nextPage: number =
+    o.page * ITEMS_PER_PAGE < o.count ? o.page + 1 : null;
+  const prevPage: number = o.page > 1 ? o.page - 1 : null;
+  const url: string = context.switchToHttp().getRequest().url;
+  return {
+    count: o.count.toString(),
+    next: nextPage ? `http://localhost:3000${url}/?page=${nextPage}` : 'null',
+    previous: prevPage
+      ? `http://localhost:3000${url}/?page=${prevPage}`
+      : 'null',
+    results: o.items,
+  };
+};

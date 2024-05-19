@@ -20,6 +20,14 @@ declare interface ResponsePage<E> {
   results: E[];
 }
 
+declare interface UniqueNameChecker {
+  /**
+   * Checks if name is not exist in store.
+   * @param name checked value.
+   */
+  isUniqueName(name: string): boolean | Promise<boolean>;
+}
+
 declare type StarWarsEntity =
   | Planet
   | Film
@@ -28,8 +36,12 @@ declare type StarWarsEntity =
   | Specie
   | Vehicle;
 
+declare interface ResponseDTO {
+  toLink(name: string, id: number): string;
+}
+
 declare interface Page<E> {
-  total: number;
+  count: number;
   items: E[];
   page: number;
 }

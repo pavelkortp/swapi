@@ -15,6 +15,6 @@ export class UniqueTitleConstraint implements ValidatorConstraintInterface {
   }
 
   async validate(value: string): Promise<boolean> {
-    return await this.filmsService.isUniqueTitle(value);
+    return await this.filmsService.isUniqueName(value);
   }
 }

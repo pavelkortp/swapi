@@ -9,16 +9,16 @@ export class CreatePlanetDTO {
   name: string;
 
   @ApiProperty()
-  @IsNumber()
-  rotation_period: number;
+  @IsString()
+  rotation_period: string;
 
   @ApiProperty()
-  @IsNumber()
-  orbital_period: number;
+  @IsString()
+  orbital_period: string;
 
   @ApiProperty()
-  @IsNumber()
-  diameter: number;
+  @IsString()
+  diameter: string;
 
   @ApiProperty()
   @IsString()
@@ -33,8 +33,8 @@ export class CreatePlanetDTO {
   terrain: string;
 
   @ApiProperty()
-  @IsNumber()
-  surface_water: number;
+  @IsString()
+  surface_water: string;
 
   @ApiProperty()
   @IsString()

@@ -28,6 +28,20 @@ export class FilmsController {
     await this.service.create(f);
   }
 
+  // @Get('copy')
+  // async copyPeople(): Promise<void> {
+  //   let response: Response = await fetch('https://swapi.py4e.com/api/films');
+  //   let res: { next: string; results: CreateFilmDTO[] } = await response.json();
+  //   do {
+  //     for (const e of res.results) {
+  //       await this.service.create(e);
+  //     }
+  //
+  //     response = await fetch(res.next);
+  //     res = await response.json();
+  //   } while (res.next);
+  // }
+
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

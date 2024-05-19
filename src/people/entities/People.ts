@@ -45,7 +45,7 @@ export class People {
 
   @ManyToOne(() => Planet, (p: Planet) => p.residents)
   @JoinTable({ name: 'planets_people' })
-  homeworld: Planet;
+  homeworld: Planet | null;
 
   @ManyToMany(() => Film, (f: Film) => f.characters)
   @JoinTable({ name: 'people_films' })

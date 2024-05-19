@@ -20,12 +20,12 @@ export class Planet {
   name: string;
 
   @Column()
-  rotation_period: number;
+  rotation_period: string;
   @Column()
-  orbital_period: number;
+  orbital_period: string;
 
   @Column()
-  diameter: number;
+  diameter: string;
 
   @Column()
   climate: string;
@@ -37,7 +37,7 @@ export class Planet {
   terrain: string;
 
   @Column()
-  surface_water: number;
+  surface_water: string;
 
   @Column()
   population: string;

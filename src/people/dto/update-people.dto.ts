@@ -50,31 +50,31 @@ export class UpdatePeopleDTO {
   skin_color?: string;
 
   @ApiProperty()
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   homeworld?: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsArray()
   @IsInt({ each: true })
-  @IsOptional()
   films?: number[];
 
   @ApiProperty()
+  @IsOptional()
   @IsArray()
   @IsInt({ each: true })
-  @IsOptional()
   species?: number[];
 
   @ApiProperty()
+  @IsOptional()
   @IsArray()
   @IsInt({ each: true })
-  @IsOptional()
   vehicles?: number[];
 
   @ApiProperty()
+  @IsOptional()
   @IsArray()
   @IsInt({ each: true })
-  @IsOptional()
   starships?: number[];
 }

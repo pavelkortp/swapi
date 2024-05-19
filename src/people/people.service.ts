@@ -8,11 +8,10 @@ import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/Film';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { GetPeopleDTO } from './dto/get-people.dto';
-import { Page } from '../declarations';
+import { UniqueNameChecker } from '../declarations';
 
 @Injectable()
-export class PeopleService {
+export class PeopleService implements UniqueNameChecker {
   constructor(
     // private speciesService: SpeciesService,
     private filmsService: FilmsService,
@@ -23,19 +22,15 @@ export class PeopleService {
   /**
    * Returns all people.
    */
-  async findAll(page: number): Promise<Page<GetPeopleDTO>> {
+  async findAll(page: number): Promise<[People[], number]> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
-    const [items, total] = await this.repository.findAndCount({
+    const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
       skip,
       take: ITEMS_PER_PAGE,
       relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
     });
-    return {
-      total,
-      items: items.map((p: People) => new GetPeopleDTO(p)),
-      page,
-    };
+    return [items, count];
   }
 
   /**
@@ -46,7 +41,7 @@ export class PeopleService {
   async findOne(id: number): Promise<People> {
     const res: People | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld', 'people', 'starships', 'species'],
+      relations: ['films', 'homeworld', 'starships', 'species'],
     });
     if (!res) {
       throw new NotFoundException();
@@ -71,7 +66,6 @@ export class PeopleService {
     return await this.repository.save(peopleEntity);
   }
 
-  // FIXME
   /**
    * Updates people, by changing exists on current.
    * @param id people id.
@@ -90,10 +84,6 @@ export class PeopleService {
     await this.repository.save(existingPeople, { reload: true });
   }
 
-  /**
-   * Checks if name is not exist in store.
-   * @param name checked value.
-   */
   public async isUniqueName(name: string): Promise<boolean> {
     return !(await this.repository.findOneBy({ name: ILike<string>(name) }));
   }

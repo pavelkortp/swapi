@@ -24,14 +24,14 @@ export class PlanetsService {
    */
   async findAll(page: number): Promise<Page<GetPlanetDTO>> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
-    const [items, total] = await this.repository.findAndCount({
+    const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
       skip,
       take: ITEMS_PER_PAGE,
       relations: ['residents', 'films'],
     });
     return {
-      total,
+      count,
       items: items.map((p: Planet) => new GetPlanetDTO(p)),
       page,
     };

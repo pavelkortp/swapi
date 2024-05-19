@@ -1,12 +1,9 @@
 import { People } from '../entities/People';
 import { ApiProperty } from '@nestjs/swagger';
-import { Film } from '../../films/entities/Film';
-import { EntityName } from '../../declarations';
-import { Specie } from '../../species/entities/Specie';
-import { Vehicle } from '../../vehicles/entities/Vehicle';
-import { Starship } from '../../starships/entities/Starship';
+import { BASE_URL } from '../../app.service';
+import { ResponseDTO } from '../../declarations';
 
-export class GetPeopleDTO {
+export class GetPeopleDTO implements ResponseDTO {
   @ApiProperty()
   name: string;
 
@@ -56,31 +53,22 @@ export class GetPeopleDTO {
   url: string;
 
   constructor(p: People) {
-    this.name = p.name;
-    this.birth_year = p.birth_year;
-    this.eye_color = p.eye_color;
-    this.gender = p.gender;
-    this.hair_color = p.hair_color;
-    this.height = p.height;
-    this.mass = p.mass;
-    this.skin_color = p.skin_color;
+    for (const key in p) {
+      if (Array.isArray(p[key])) {
+        this[key] = p[key].map((e) => this.toLink(key, e.id));
+      } else if (key == 'id') {
+        continue;
+      } else {
+        this[key] = p[key];
+      }
+    }
     this.homeworld = p.homeworld
       ? this.toLink('planets', p.homeworld.id)
       : 'null';
-    this.films = p.films.map((f: Film) => this.toLink('films', f.id));
-    this.species = p.species.map((s: Specie) => this.toLink('species', s.id));
-    this.vehicles = p.vehicles.map((v: Vehicle) =>
-      this.toLink('vehicles', v.id),
-    );
-    this.vehicles = p.starships.map((s: Starship) =>
-      this.toLink('starships', s.id),
-    );
-    this.created = p.created;
-    this.edited = p.edited;
-    this.url = `http://localhost:3000/api/people/${p.id}`;
+    this.url = this.toLink('people', p.id);
   }
 
-  private toLink(name: EntityName, id: number): string {
-    return `http://localhost:3000/api/${name}/${id}`;
+  toLink(name: string, id: number): string {
+    return `${BASE_URL}/${name}/${id}/`;
   }
 }

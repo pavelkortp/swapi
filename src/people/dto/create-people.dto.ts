@@ -30,6 +30,10 @@ export class CreatePeopleDTO {
 
   @ApiProperty()
   @IsNumberString()
+  homeworld: string;
+
+  @ApiProperty()
+  @IsNumberString()
   mass: string;
 
   @ApiProperty()
