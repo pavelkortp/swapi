@@ -2,14 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ILike, Repository } from 'typeorm';
 import { Planet } from './entities/Planet';
 import { InjectRepository } from '@nestjs/typeorm';
-import { People } from '../people/entities/People';
 import { plainToClass } from 'class-transformer';
 import { UpdatePlanetDTO } from './dto/update-planet.dto';
 import { CreatePlanetDTO } from './dto/create-planet.dto';
 import { Page } from '../declarations';
 import { GetPlanetDTO } from './dto/get-planet.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { GetPeopleDTO } from '../people/dto/get-people.dto';
 
 @Injectable()
 export class PlanetsService {
@@ -22,7 +20,7 @@ export class PlanetsService {
    * Returns all Planets by page.
    * @param page page from planets list
    */
-  async findAll(page: number): Promise<Page<GetPlanetDTO>> {
+  async findAll(page: number): Promise<[Planet[], number]> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
     const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
@@ -30,11 +28,7 @@ export class PlanetsService {
       take: ITEMS_PER_PAGE,
       relations: ['residents', 'films'],
     });
-    return {
-      count,
-      items: items.map((p: Planet) => new GetPlanetDTO(p)),
-      page,
-    };
+    return [items, count];
   }
 
   /**

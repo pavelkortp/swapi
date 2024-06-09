@@ -18,6 +18,7 @@ import { CreatePlanetDTO } from './dto/create-planet.dto';
 import { UpdatePlanetDTO } from './dto/update-planet.dto';
 import { Page } from '../declarations';
 import { GetPlanetDTO } from './dto/get-planet.dto';
+import { GetPeopleDTO } from '../people/dto/get-people.dto';
 
 @ApiTags('planets')
 @Controller('planets')
@@ -29,25 +30,16 @@ export class PlanetsController {
     await this.service.create(p);
   }
 
-  // @Get('copy')
-  // async copyPeople(): Promise<void> {
-  //   let response: Response = await fetch('https://swapi.py4e.com/api/planets');
-  //   let res: { next: string; results: CreatePlanetDTO[] } =
-  //     await response.json();
-  //   do {
-  //     for (const e of res.results) {
-  //       await this.service.create(e);
-  //     }
-  //     response = await fetch(res.next);
-  //     res = await response.json();
-  //   } while (res.next);
-  // }
-
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ): Promise<Page<GetPlanetDTO>> {
-    return await this.service.findAll(page);
+    const [planets, count] = await this.service.findAll(page);
+    return {
+      items: planets.map((p) => new GetPlanetDTO(p)),
+      count,
+      page,
+    };
   }
 
   @Get(':id')
