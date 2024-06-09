@@ -1,20 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { People } from './entities/People';
 import { CreatePeopleDTO } from './dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
 import { UpdatePeopleDTO } from './dto/update-people.dto';
-import { FilmsService } from '../films/films.service';
-import { Film } from '../films/entities/Film';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
+import { Film } from '../films/entities/Film';
+import { ImageService } from '../images/image.service';
 
 @Injectable()
 export class PeopleService implements UniqueNameChecker {
   constructor(
-    // private speciesService: SpeciesService,
-    private filmsService: FilmsService,
+    @Inject(forwardRef(() => ImageService))
+    private imageService: ImageService,
     @InjectRepository(People)
     private repository: Repository<People>,
   ) {}
@@ -28,7 +33,14 @@ export class PeopleService implements UniqueNameChecker {
       order: { created: 'DESC' },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: ['films', 'homeworld', 'vehicles', 'starships', 'species'],
+      relations: [
+        'films',
+        'homeworld',
+        'vehicles',
+        'starships',
+        'species',
+        'images',
+      ],
     });
     return [items, count];
   }
@@ -41,7 +53,7 @@ export class PeopleService implements UniqueNameChecker {
   async findOne(id: number): Promise<People> {
     const res: People | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld', 'starships', 'species'],
+      relations: ['films', 'homeworld', 'starships', 'species', 'images'],
     });
     if (!res) {
       throw new NotFoundException();
@@ -60,9 +72,15 @@ export class PeopleService implements UniqueNameChecker {
   /**
    * Creates new people.
    * @param p new people.
+   * @param images
    */
-  async create(p: CreatePeopleDTO): Promise<People> {
+  async create(
+    p: CreatePeopleDTO,
+    images: Array<Express.Multer.File>,
+  ): Promise<People> {
+    const pImages = await this.imageService.saveAll(images);
     const peopleEntity: People = plainToClass(People, p);
+    peopleEntity.images = pImages;
     return await this.repository.save(peopleEntity);
   }
 
@@ -71,17 +89,14 @@ export class PeopleService implements UniqueNameChecker {
    * @param id people id.
    * @param p new people.
    */
-  async update(id: number, p: UpdatePeopleDTO): Promise<void> {
-    const films: Film[] = await Promise.all(
-      p?.films.map(
-        async (id: number): Promise<Film> =>
-          await this.filmsService.findOne(id),
-      ) || [],
-    );
+  async update(id: number, p: UpdatePeopleDTO): Promise<People> {
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
-    existingPeople.films = films;
+    existingPeople.films = p.films.map((f) => {
+      return { id: f } as Film;
+    });
     await this.repository.save(existingPeople, { reload: true });
+    return existingPeople;
   }
 
   public async isUniqueName(name: string): Promise<boolean> {
