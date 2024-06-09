@@ -17,6 +17,10 @@ export class ImageService {
     return await this.repository.save(newImage);
   }
 
+  async saveAll(images: Array<Express.Multer.File>): Promise<Image[]> {
+    return Promise.all(images.map(async (image) => this.save(image)));
+  }
+
   async findOne(id: number): Promise<Stream> {
     const image = await this.repository.findOne({ where: { id } });
     return createReadStream(image.link);

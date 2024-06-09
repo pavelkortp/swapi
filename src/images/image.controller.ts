@@ -12,7 +12,6 @@ export class ImageController {
     res.set({
       'Content-Type': 'image/jpg',
     });
-
     imageStream.pipe(res);
   }
 }

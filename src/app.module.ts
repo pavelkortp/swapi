@@ -9,6 +9,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PageInterceptor } from './interceptors/page.interceptor';
 import { PlanetsModule } from './planets/planets.module';
 import { SpeciesModule } from './species/species.module';
+import { ImageModule } from './images/image.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SpeciesModule } from './species/species.module';
     FilmsModule,
     SpeciesModule,
     TypeOrmModule.forRoot(dataSourceOptions),
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [
