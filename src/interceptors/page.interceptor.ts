@@ -4,16 +4,25 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { Page, ResponseDTO } from '../declarations';
+import { Page, ResponseDTO, ResponsePage } from '../declarations';
 
 @Injectable()
-export class PageInterceptor implements NestInterceptor<any, any> {
-  async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
+export class PageInterceptor
+  implements
+    NestInterceptor<
+      ResponseDTO | Page<ResponseDTO>,
+      ResponseDTO | ResponsePage<ResponseDTO>
+    >
+{
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<ResponseDTO | ResponsePage<ResponseDTO>>> {
     return next.handle().pipe(
       map((response) => {
-        if (response.count) {
+        if (response?.count) {
           return processMany(context, response);
         } else {
           return response;
@@ -23,11 +32,10 @@ export class PageInterceptor implements NestInterceptor<any, any> {
   }
 }
 
-// const processOne = async (data: any) => {
-//   return {}
-// }
-
-const processMany = (context: ExecutionContext, o: Page<ResponseDTO>) => {
+const processMany = (
+  context: ExecutionContext,
+  o: Page<ResponseDTO>,
+): ResponsePage<ResponseDTO> => {
   const nextPage: number =
     o.page * ITEMS_PER_PAGE < o.count ? o.page + 1 : null;
   const prevPage: number = o.page > 1 ? o.page - 1 : null;
