@@ -44,6 +44,9 @@ export class GetPeopleDTO implements ResponseDTO {
   starships: string[];
 
   @ApiProperty()
+  images: string[];
+
+  @ApiProperty()
   created: Date;
 
   @ApiProperty()

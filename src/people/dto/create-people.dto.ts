@@ -1,4 +1,9 @@
-import { IsNumberString, IsString, Validate } from 'class-validator';
+import {
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -30,6 +35,7 @@ export class CreatePeopleDTO {
 
   @ApiProperty()
   @IsNumberString()
+  @IsOptional()
   homeworld: string;
 
   @ApiProperty()
@@ -39,4 +45,13 @@ export class CreatePeopleDTO {
   @ApiProperty()
   @IsString()
   skin_color: string;
+
+  films = [];
+  species = [];
+  vehicles = [];
+  starships = [];
+
+  @ApiProperty()
+  @IsOptional()
+  images: [];
 }
