@@ -13,6 +13,7 @@ import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
+import { Image } from '../../images/entities/Image';
 
 @Entity('people')
 export class People {
@@ -58,6 +59,10 @@ export class People {
   @ManyToMany(() => Vehicle, (v: Vehicle) => v.pilots)
   @JoinTable({ name: 'vehicles_people' })
   vehicles: Vehicle[];
+
+  @ManyToMany(() => Image)
+  @JoinTable({ name: 'people_images' })
+  images: Image[];
 
   @ManyToMany(() => Starship, (s: Starship) => s.pilots)
   @JoinTable({ name: 'starships_people' })
