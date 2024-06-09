@@ -21,7 +21,9 @@ lerna-debug.log*
 /.nyc_output
 
 # IDEs and editors
+/.fleet
 /.idea
+/uploads
 .project
 .classpath
 .c9/
