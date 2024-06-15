@@ -23,6 +23,7 @@ import { GetPeopleDTO } from './dto/get-people.dto';
 import { People } from './entities/People';
 import { Page } from '../declarations';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
 @ApiTags(`people`)
 @Controller('people')
@@ -32,22 +33,21 @@ export class PeopleController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: 'image' })],
-      }),
-    )
-    images: Array<Express.Multer.File>,
     @Body(ValidationPipe) p: CreatePeopleDTO,
+    @UploadedFiles(OptionalImagePipe)
+    images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
+    console.log(images);
+    console.log(p);
     return new GetPeopleDTO(await this.service.create(p, images));
   }
 
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Param('name') name: string,
   ): Promise<Page<GetPeopleDTO>> {
-    const [people, count] = await this.service.findAll(page);
+    const [people, count] = await this.service.findAll(page, name);
     return {
       items: people.map((p) => new GetPeopleDTO(p)),
       count,
@@ -62,15 +62,22 @@ export class PeopleController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdatePeopleDTO,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: 'image/*' })],
+      }),
+    )
+    images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
-    return new GetPeopleDTO(await this.service.update(id, p));
+    return new GetPeopleDTO(await this.service.update(id, p, images));
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.service.remove(id);
   }
 }

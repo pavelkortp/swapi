@@ -36,7 +36,7 @@ export class CreatePeopleDTO {
   @ApiProperty()
   @IsNumberString()
   @IsOptional()
-  homeworld: string;
+  homeworld: string | null;
 
   @ApiProperty()
   @IsNumberString()
@@ -50,8 +50,4 @@ export class CreatePeopleDTO {
   species = [];
   vehicles = [];
   starships = [];
-
-  @ApiProperty()
-  @IsOptional()
-  images: [];
 }
