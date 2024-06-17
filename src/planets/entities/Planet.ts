@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
+import { Image } from '../../images/entities/Image';
 
 @Entity('planets')
 export class Planet {
@@ -41,6 +42,10 @@ export class Planet {
 
   @Column()
   population: string;
+
+  @ManyToMany(() => Image)
+  @JoinTable({ name: 'planets_images' })
+  images: Image[];
 
   @OneToMany(() => People, (p: People) => p.homeworld)
   @JoinTable({ name: 'planets_people' })

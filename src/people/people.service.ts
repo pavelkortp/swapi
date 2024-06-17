@@ -12,7 +12,6 @@ import { plainToClass } from 'class-transformer';
 import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
-import { Film } from '../films/entities/Film';
 import { ImageService } from '../images/image.service';
 
 @Injectable()
@@ -27,10 +26,13 @@ export class PeopleService implements UniqueNameChecker {
   /**
    * Returns all people.
    */
-  async findAll(page: number, name: string): Promise<[People[], number]> {
+  async findAll(page: number, name?: string): Promise<[People[], number]> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
     const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
+      where: {
+        name: ILike<string>(name ? `%${name}%` : '%%'),
+      },
       skip,
       take: ITEMS_PER_PAGE,
       relations: [
@@ -103,22 +105,9 @@ export class PeopleService implements UniqueNameChecker {
     const pImages = await this.imageService.saveAll(images);
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
-    existingPeople.films = p.films.map((f) => {
-      return { id: f } as Film;
-    });
     existingPeople.images = pImages;
     await this.repository.save(existingPeople, { reload: true });
     return existingPeople;
-  }
-
-  /**
-   * Finds people that match name like this.
-   * @param name people name.
-   */
-  public async getPeopleByName(name: string): Promise<People[]> {
-    return await this.repository.findBy({
-      name: ILike<string>(`%${name}%`),
-    });
   }
 
   public async isUniqueName(name: string): Promise<boolean> {

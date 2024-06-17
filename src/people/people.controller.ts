@@ -45,7 +45,7 @@ export class PeopleController {
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Param('name') name: string,
+    @Query('name') name?: string,
   ): Promise<Page<GetPeopleDTO>> {
     const [people, count] = await this.service.findAll(page, name);
     return {
