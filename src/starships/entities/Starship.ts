@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
+import { Image } from '../../images/entities/Image';
 
 @Entity('starships')
 export class Starship {
@@ -61,6 +62,10 @@ export class Starship {
   @ManyToMany(() => Film, (f: Film) => f.starships)
   @JoinTable({ name: 'starships_films' })
   films: Film[];
+
+  @ManyToMany(() => Image, () => Image)
+  @JoinTable({ name: 'starships_images' })
+  images: Image[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;

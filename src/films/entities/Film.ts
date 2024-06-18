@@ -12,6 +12,7 @@ import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
+import { Image } from '../../images/entities/Image';
 
 @Entity('films')
 export class Film {
@@ -55,6 +56,10 @@ export class Film {
   @ManyToMany(() => Specie, (s: Specie) => s.films)
   @JoinTable({ name: 'species_films' })
   species: Specie[];
+
+  @ManyToMany(() => Image, () => Image)
+  @JoinTable({ name: 'films_images' })
+  images: Image[];
 
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
