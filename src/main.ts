@@ -16,7 +16,7 @@ async function bootstrap() {
   const config = new DocumentBuilder().setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, document);
-  //Don't how to work, but this line for injecting peopleService into UniqueNameConstraint
+  //Don't know how to work, but this line for injecting peopleService into UniqueNameConstraint
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.listen(3000);
 }

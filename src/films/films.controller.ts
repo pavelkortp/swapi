@@ -9,6 +9,8 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateFilmDTO } from './dto/create-film.dto';
@@ -17,6 +19,8 @@ import { UpdateFilmDTO } from './dto/update-film.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Page } from '../declarations';
 import { GetFilmDTO } from './dto/get-film.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
 @ApiTags('films')
 @Controller('films')
@@ -24,8 +28,15 @@ export class FilmsController {
   constructor(private service: FilmsService) {}
 
   @Post()
-  async create(@Body(ValidationPipe) f: CreateFilmDTO): Promise<void> {
-    await this.service.create(f);
+  @UseInterceptors(FilesInterceptor('images'))
+  async create(
+    @Body(ValidationPipe) f: CreateFilmDTO,
+    @UploadedFiles(OptionalImagePipe)
+    images?: Array<Express.Multer.File>,
+  ): Promise<GetFilmDTO> {
+    console.log(images);
+    console.log(f);
+    return new GetFilmDTO(await this.service.create(f, images));
   }
 
   // @Get('copy')
@@ -45,8 +56,14 @@ export class FilmsController {
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('name') name?: string,
   ): Promise<Page<GetFilmDTO>> {
-    return await this.service.findAll(page);
+    const [films, count] = await this.service.findAll(page, name);
+    return {
+      items: films.map((p) => new GetFilmDTO(p)),
+      count,
+      page,
+    };
   }
 
   @Get(':id')

@@ -4,10 +4,12 @@ import { FilmsService } from './films.service';
 import { FilmsController } from './films.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Film } from './entities/Film';
+import { ImageService } from '../images/image.service';
+import { Image } from '../images/entities/Image';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Film])],
-  providers: [UniqueTitleConstraint, FilmsService],
+  imports: [TypeOrmModule.forFeature([Film, Image])],
+  providers: [UniqueTitleConstraint, FilmsService, ImageService],
   controllers: [FilmsController],
 })
 export class FilmsModule {}

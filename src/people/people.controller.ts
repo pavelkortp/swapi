@@ -3,10 +3,8 @@ import {
   Controller,
   DefaultValuePipe,
   Delete,
-  FileTypeValidator,
   Get,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -66,13 +64,10 @@ export class PeopleController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdatePeopleDTO,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: 'image/*' })],
-      }),
-    )
+    @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
+    console.log();
     return new GetPeopleDTO(await this.service.update(id, p, images));
   }
 

@@ -100,9 +100,13 @@ export class PeopleService implements UniqueNameChecker {
   async update(
     id: number,
     p: UpdatePeopleDTO,
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ): Promise<People> {
-    const pImages = await this.imageService.saveAll(images);
+    let pImages;
+    if (images) {
+      pImages = await this.imageService.saveAll(images);
+    }
+    console.log(p);
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
     existingPeople.images = pImages;

@@ -2,6 +2,7 @@ import {
   IsArray,
   IsInt,
   IsNumber,
+  isNumberString,
   IsNumberString,
   IsOptional,
   IsString,
@@ -51,8 +52,8 @@ export class UpdatePeopleDTO {
 
   @ApiProperty()
   @IsOptional()
-  @IsNumber()
-  homeworld?: number;
+  @IsNumberString()
+  homeworld?: string;
 
   @ApiProperty()
   @IsOptional()
