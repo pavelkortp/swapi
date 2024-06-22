@@ -31,11 +31,10 @@ export class PeopleController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) p: CreatePeopleDTO,
+    @Body() p: CreatePeopleDTO,
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
-    console.log(images);
     console.log(p);
     return new GetPeopleDTO(await this.service.create(p, images));
   }

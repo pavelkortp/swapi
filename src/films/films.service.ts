@@ -11,9 +11,9 @@ import { plainToClass } from 'class-transformer';
 import { CreateFilmDTO } from './dto/create-film.dto';
 import { UpdateFilmDTO } from './dto/update-film.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { Page, UniqueNameChecker } from '../declarations';
-import { GetFilmDTO } from './dto/get-film.dto';
+import { UniqueNameChecker } from '../declarations';
 import { ImageService } from '../images/image.service';
+import { Image } from '../images/entities/Image';
 
 @Injectable()
 export class FilmsService implements UniqueNameChecker {
@@ -82,6 +82,7 @@ export class FilmsService implements UniqueNameChecker {
   /**
    * Creates new films.
    * @param f new film.
+   * @param images
    */
   async create(
     f: CreateFilmDTO,
@@ -97,15 +98,24 @@ export class FilmsService implements UniqueNameChecker {
     return await this.repository.save(filmEntity);
   }
 
-  // FIXME
   /**
    * Updates film, by changing exists on current.
    * @param id film id.
    * @param f new film.
+   * @param images
    */
-  async update(id: number, f: UpdateFilmDTO): Promise<void> {
-    const existingFilm: Film = await this.findOne(id);
+  async update(
+    id: number,
+    f: UpdateFilmDTO,
+    images?: Array<Express.Multer.File>,
+  ): Promise<void> {
+    let pImages: Image[];
+    if (images) {
+      pImages = await this.imageService.saveAll(images);
+    }
+    const existingFilm: Film = await this.repository.findOneBy({ id });
     Object.assign(existingFilm, f);
+    existingFilm.images = pImages;
     await this.repository.save(existingFilm, { reload: true });
   }
 

@@ -3,10 +3,8 @@ import {
   Controller,
   DefaultValuePipe,
   Delete,
-  FileTypeValidator,
   Get,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -23,10 +21,7 @@ import { UpdatePlanetDTO } from './dto/update-planet.dto';
 import { Page } from '../declarations';
 import { GetPlanetDTO } from './dto/get-planet.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CreatePeopleDTO } from '../people/dto/create-people.dto';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
-import { GetPeopleDTO } from '../people/dto/get-people.dto';
-import { UpdatePeopleDTO } from '../people/dto/update-people.dto';
 
 @ApiTags('planets')
 @Controller('planets')
@@ -68,11 +63,7 @@ export class PlanetsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdatePlanetDTO,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: 'image/*' })],
-      }),
-    )
+    @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPlanetDTO> {
     return new GetPlanetDTO(await this.service.update(id, p, images));
