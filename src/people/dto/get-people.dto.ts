@@ -1,9 +1,8 @@
 import { People } from '../entities/People';
 import { ApiProperty } from '@nestjs/swagger';
-import { BASE_URL } from '../../app.service';
-import { ResponseDTO } from '../../declarations';
+import { PresentDTO } from "../../common/present.dto";
 
-export class GetPeopleDTO implements ResponseDTO {
+export class GetPeopleDTO extends PresentDTO{
   @ApiProperty()
   name: string;
 
@@ -46,32 +45,11 @@ export class GetPeopleDTO implements ResponseDTO {
   @ApiProperty()
   images: string[];
 
-  @ApiProperty()
-  created: Date;
-
-  @ApiProperty()
-  edited: Date;
-
-  @ApiProperty()
-  url: string;
-
   constructor(p: People) {
-    for (const key in p) {
-      if (Array.isArray(p[key])) {
-        this[key] = p[key].map((e) => this.toLink(key, e.id));
-      } else if (key == 'id') {
-        continue;
-      } else {
-        this[key] = p[key];
-      }
-    }
+    super(p);
     this.homeworld = p.homeworld
       ? this.toLink('planets', p.homeworld.id)
       : 'null';
     this.url = this.toLink('people', p.id);
-  }
-
-  toLink(name: string, id: number): string {
-    return `${BASE_URL}/${name}/${id}/`;
   }
 }

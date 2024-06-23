@@ -1,9 +1,7 @@
-import { Film } from '../entities/Film';
 import { ApiProperty } from '@nestjs/swagger';
-import { ResponseDTO } from '../../declarations';
-import { BASE_URL } from '../../app.service';
+import { PresentDTO } from "../../common/present.dto";
 
-export class GetFilmDTO implements ResponseDTO {
+export class GetFilmDTO extends PresentDTO{
   @ApiProperty()
   title: string;
 
@@ -36,31 +34,4 @@ export class GetFilmDTO implements ResponseDTO {
 
   @ApiProperty()
   species: string[];
-
-  @ApiProperty()
-  created: Date;
-
-  @ApiProperty()
-  edited: Date;
-
-  @ApiProperty()
-  url: string;
-
-  constructor(f: Film) {
-    for (const key in f) {
-      if (Array.isArray(f[key])) {
-        this[key] = f[key].map((e) => this.toLink(key, e.id));
-      } else if (key == 'id') {
-        continue;
-      } else {
-        this[key] = f[key];
-      }
-    }
-
-    this.url = this.toLink('films', f.id);
-  }
-
-  toLink(name: string, id: number): string {
-    return `${BASE_URL}/${name}/${id}/`;
-  }
 }

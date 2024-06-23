@@ -1,10 +1,5 @@
-import { Specie } from '../entities/Specie';
-import { ResponseDTO } from '../../declarations';
+import { PresentDTO } from "../../common/present.dto";
 
-export class GetSpeciesDto implements ResponseDTO {
-  constructor(s: Specie) {}
+export class GetSpeciesDto extends PresentDTO{
 
-  toLink(name: string, id: number): string {
-    return '';
-  }
 }
