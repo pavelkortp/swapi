@@ -14,7 +14,7 @@ import { plainToClass } from 'class-transformer';
 import { Image } from '../images/entities/Image';
 import { UpdateSpeciesDto } from './dto/update-specie.dto';
 import { ImageService } from '../images/image.service';
-import { CreateSpecieDto } from './dto/create-specie.dto';
+import { CreateSpecieDTO } from './dto/create-specie.dto';
 
 @Injectable()
 export class SpeciesService {
@@ -71,7 +71,7 @@ export class SpeciesService {
    * @param images
    */
   async create(
-    p: CreateSpecieDto,
+    p: CreateSpecieDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<Specie> {
     const specieEntity: Specie = plainToClass(Specie, p);

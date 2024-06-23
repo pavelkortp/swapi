@@ -19,7 +19,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 import { Page } from '../declarations';
 import { GetSpeciesDto } from './dto/get-specie.dto';
-import { CreateSpecieDto } from './dto/create-specie.dto';
+import { CreateSpecieDTO } from './dto/create-specie.dto';
 import { UpdateSpeciesDto } from './dto/update-specie.dto';
 
 @ApiTags('species')
@@ -30,7 +30,7 @@ export class SpeciesController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) f: CreateSpecieDto,
+    @Body(ValidationPipe) f: CreateSpecieDTO,
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetSpeciesDto> {
@@ -42,7 +42,7 @@ export class SpeciesController {
   @Get('copy')
   async copyPeople(): Promise<void> {
     let response: Response = await fetch('https://swapi.py4e.com/api/species');
-    let res: { next: string; results: CreateSpecieDto[] } =
+    let res: { next: string; results: CreateSpecieDTO[] } =
       await response.json();
     do {
       for (const e of res.results) {

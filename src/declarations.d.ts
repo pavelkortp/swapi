@@ -25,7 +25,7 @@ declare interface UniqueNameChecker {
    * Checks if name is not exist in store.
    * @param name checked value.
    */
-  isUniqueName(name: string): boolean | Promise<boolean>;
+  isUniqueName(name: string):  Promise<boolean>;
 }
 
 declare type StarWarsEntity =
