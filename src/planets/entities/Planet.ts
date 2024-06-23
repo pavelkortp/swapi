@@ -1,22 +1,17 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
 import { Image } from '../../images/entities/Image';
+import { CommonEntity } from "../../common/CommonEntity";
 
 @Entity('planets')
-export class Planet {
-  @PrimaryGeneratedColumn('identity')
-  id: number;
-
+export class Planet  extends CommonEntity{
   @Column()
   name: string;
 
@@ -54,13 +49,4 @@ export class Planet {
   @ManyToMany(() => Film, (f: Film) => f.characters)
   @JoinTable({ name: 'planets_films' })
   films: Film[];
-
-  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
-
-  @UpdateDateColumn({
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  edited: Date;
 }

@@ -13,12 +13,10 @@ import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
 import { Image } from '../../images/entities/Image';
 import { ImageService } from '../../images/image.service';
+import { CommonEntity } from "../../common/CommonEntity";
 
 @Entity('species')
-export class Specie {
-  @PrimaryGeneratedColumn('identity')
-  id: number;
-
+export class Specie extends CommonEntity{
   @Column()
   name: string;
 
@@ -61,13 +59,4 @@ export class Specie {
   @ManyToMany(() => Image, () => Image)
   @JoinTable({ name: 'species_images' })
   images: Image[];
-
-  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
-
-  @UpdateDateColumn({
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  edited: Date;
 }

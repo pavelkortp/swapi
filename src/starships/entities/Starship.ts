@@ -1,21 +1,16 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
 import { Image } from '../../images/entities/Image';
+import { CommonEntity } from "../../common/CommonEntity";
 
 @Entity('starships')
-export class Starship {
-  @PrimaryGeneratedColumn('identity')
-  id: number;
-
+export class Starship extends CommonEntity{
   @Column({ unique: true })
   name: string;
 
@@ -66,13 +61,4 @@ export class Starship {
   @ManyToMany(() => Image, () => Image)
   @JoinTable({ name: 'starships_images' })
   images: Image[];
-
-  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
-
-  @UpdateDateColumn({
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  edited: Date;
 }
