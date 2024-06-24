@@ -1,20 +1,14 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
 import { Image } from '../../images/entities/Image';
-import { CommonEntity } from "../../common/CommonEntity";
+import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('people')
-export class People extends CommonEntity{
+export class People extends CommonEntity {
   @Column({ unique: true })
   name: string;
 
@@ -40,7 +34,7 @@ export class People extends CommonEntity{
   skin_color: string;
 
   @ManyToOne(() => Planet, (p: Planet) => p.residents)
-  @JoinTable({ name: 'planets_people' })
+  @JoinTable({ name: 'planets' })
   homeworld: Planet | null;
 
   @ManyToMany(() => Film, (f: Film) => f.characters)

@@ -1,7 +1,9 @@
-import { PresentDTO } from "../../common/present.dto";
-import { ApiProperty } from "@nestjs/swagger";
+import { PresentDTO } from '../../common/present.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { People } from '../../people/entities/People';
+import { Planet } from '../entities/Planet';
 
-export class GetPlanetDTO extends PresentDTO{
+export class GetPlanetDTO extends PresentDTO {
   @ApiProperty()
   name: string;
 
@@ -28,4 +30,10 @@ export class GetPlanetDTO extends PresentDTO{
 
   @ApiProperty()
   population: string;
+
+  constructor(p: Planet) {
+    super(p);
+    this.setKeys(p);
+    this.url = this.toLink('planets', p.id);
+  }
 }

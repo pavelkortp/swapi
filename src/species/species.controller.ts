@@ -46,6 +46,7 @@ export class SpeciesController {
       await response.json();
     do {
       for (const e of res.results) {
+        e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
         await this.service.create(e);
       }
 

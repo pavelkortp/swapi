@@ -1,55 +1,46 @@
-import { Column, JoinTable, ManyToMany, ManyToOne } from "typeorm";
-import { Planet } from "../../planets/entities/Planet";
-import { People } from "../../people/entities/People";
-import { Film } from "../../films/entities/Film";
-import { Image } from "../../images/entities/Image";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Validate } from "class-validator";
-import { UniqueTitleConstraint } from "../../films/validation/unique-title.constraint";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Validate } from 'class-validator';
+import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
 export class CreateSpecieDTO {
   @ApiProperty()
-  @Validate(UniqueTitleConstraint)
+  @Validate(UniqueNameConstraint)
   @IsString()
   name: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   classification: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   designation: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   average_height: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   skin_colors: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   hair_colors: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   eye_colors: string;
 
-  @Column()
-  average_lifespan: number;
+  @ApiProperty()
+  @IsString()
+  average_lifespan: string;
 
-  @ManyToOne(() => Planet)
-  @JoinTable({ name: 'planets' })
-  homeworld: Planet;
+  @ApiProperty()
+  @IsString()
+  homeworld: string;
 
-  @Column()
+  @ApiProperty()
+  @IsString()
   language: string;
-
-  @ManyToMany(() => People, (p: People) => p.species)
-  @JoinTable({ name: 'species_people' })
-  people: People[];
-
-  @ManyToMany(() => Film, (f: Film) => f.species)
-  @JoinTable({ name: 'species_films' })
-  films: Film[];
-
-  @ManyToMany(() => Image, () => Image)
-  @JoinTable({ name: 'species_images' })
-  images: Image[];
 }

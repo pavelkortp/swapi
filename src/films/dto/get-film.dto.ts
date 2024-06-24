@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PresentDTO } from "../../common/present.dto";
+import { PresentDTO } from '../../common/present.dto';
+import { Film } from '../entities/Film';
 
-export class GetFilmDTO extends PresentDTO{
+export class GetFilmDTO extends PresentDTO {
   @ApiProperty()
   title: string;
 
@@ -34,4 +35,10 @@ export class GetFilmDTO extends PresentDTO{
 
   @ApiProperty()
   species: string[];
+
+  constructor(f: Film) {
+    super(f);
+    this.setKeys(f);
+    this.url = this.toLink('films', f.id);
+  }
 }

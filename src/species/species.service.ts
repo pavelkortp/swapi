@@ -15,10 +15,14 @@ import { Image } from '../images/entities/Image';
 import { UpdateSpeciesDto } from './dto/update-specie.dto';
 import { ImageService } from '../images/image.service';
 import { CreateSpecieDTO } from './dto/create-specie.dto';
+import { Planet } from '../planets/entities/Planet';
+import { PlanetsService } from '../planets/planets.service';
 
 @Injectable()
 export class SpeciesService {
   constructor(
+    @Inject(forwardRef(() => PlanetsService))
+    private planetsService: PlanetsService,
     @Inject(forwardRef(() => ImageService))
     private imageService: ImageService,
     @InjectRepository(Specie) private repository: Repository<Specie>,
@@ -76,12 +80,19 @@ export class SpeciesService {
   ): Promise<Specie> {
     const specieEntity: Specie = plainToClass(Specie, p);
     let pImages = [];
+    const id = parseInt(p.homeworld);
+    console.log(p.homeworld);
 
+    let planet = null;
+    if (id) {
+      planet = await this.planetsService.findOne(id);
+    }
     if (images) {
       pImages = await this.imageService.saveAll(images);
     }
 
     specieEntity.images = pImages;
+    specieEntity.homeworld = planet;
     return await this.repository.save(specieEntity);
   }
 
@@ -100,7 +111,6 @@ export class SpeciesService {
     if (images) {
       pImages = await this.imageService.saveAll(images);
     }
-    console.log(p);
     const existingSpecie: Specie = await this.repository.findOneBy({ id });
     Object.assign(existingSpecie, p);
     existingSpecie.images = pImages;

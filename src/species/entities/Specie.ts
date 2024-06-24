@@ -2,22 +2,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { People } from '../../people/entities/People';
 import { Film } from '../../films/entities/Film';
 import { Planet } from '../../planets/entities/Planet';
 import { Image } from '../../images/entities/Image';
-import { ImageService } from '../../images/image.service';
-import { CommonEntity } from "../../common/CommonEntity";
+import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('species')
-export class Specie extends CommonEntity{
-  @Column()
+export class Specie extends CommonEntity {
+  @Column({ unique: true })
   name: string;
 
   @Column()
@@ -39,11 +37,11 @@ export class Specie extends CommonEntity{
   eye_colors: string;
 
   @Column()
-  average_lifespan: number;
+  average_lifespan: string;
 
-  @ManyToOne(() => Planet)
-  @JoinTable({ name: 'planets' })
-  homeworld: Planet;
+  @ManyToOne(() => Planet, { nullable: true })
+  @JoinColumn({ name: 'homeworldId' })
+  homeworld: Planet | null;
 
   @Column()
   language: string;

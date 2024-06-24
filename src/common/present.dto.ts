@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { CommonEntity } from "./CommonEntity";
-import { BASE_URL } from "../app.service";
+import { ApiProperty } from '@nestjs/swagger';
+import { CommonEntity } from './CommonEntity';
+import { BASE_URL } from '../app.service';
 
-export abstract class PresentDTO{
+export abstract class PresentDTO {
   @ApiProperty()
   created: Date;
 
@@ -12,7 +12,11 @@ export abstract class PresentDTO{
   @ApiProperty()
   url: string;
 
-  protected constructor(c: CommonEntity) {
+  constructor(c: CommonEntity) {
+    this.setKeys(c);
+  }
+
+  setKeys(c: CommonEntity) {
     for (const key in c) {
       if (Array.isArray(c[key])) {
         this[key] = c[key].map((e) => this.toLink(key, e.id));

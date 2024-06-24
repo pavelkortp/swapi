@@ -1,8 +1,8 @@
 import { People } from '../entities/People';
 import { ApiProperty } from '@nestjs/swagger';
-import { PresentDTO } from "../../common/present.dto";
+import { PresentDTO } from '../../common/present.dto';
 
-export class GetPeopleDTO extends PresentDTO{
+export class GetPeopleDTO extends PresentDTO {
   @ApiProperty()
   name: string;
 
@@ -47,9 +47,10 @@ export class GetPeopleDTO extends PresentDTO{
 
   constructor(p: People) {
     super(p);
+    this.setKeys(p);
+    this.url = this.toLink('people', p.id);
     this.homeworld = p.homeworld
       ? this.toLink('planets', p.homeworld.id)
       : 'null';
-    this.url = this.toLink('people', p.id);
   }
 }

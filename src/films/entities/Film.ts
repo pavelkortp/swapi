@@ -11,11 +11,10 @@ import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
 import { Image } from '../../images/entities/Image';
-import { CommonEntity } from "../../common/CommonEntity";
+import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('films')
-export class Film extends CommonEntity{
-
+export class Film extends CommonEntity {
   @Column()
   title: string;
 
