@@ -31,7 +31,7 @@ export class PeopleController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body() p: CreatePeopleDTO,
+    @Body(ValidationPipe) p: CreatePeopleDTO,
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {

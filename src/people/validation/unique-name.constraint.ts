@@ -5,7 +5,7 @@ import {
 import { PeopleService } from '../people.service.js';
 import { Inject, Injectable } from '@nestjs/common';
 
-@ValidatorConstraint({ name: 'isUniqueName', async: true })
+@ValidatorConstraint()
 @Injectable()
 export class UniqueNameConstraint implements ValidatorConstraintInterface {
   constructor(@Inject(PeopleService) private peopleService: PeopleService) {}
