@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString, Validate } from 'class-validator';
-import { UniqueNameConstraint } from '../validation/unique-name.constraint';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePlanetDTO {
   @ApiProperty()
   @IsString()
-  @Validate(UniqueNameConstraint)
   @IsOptional()
   name?: string;
 
