@@ -1,16 +1,11 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Film } from '../../films/entities/Film';
 import { People } from '../../people/entities/People';
 import { Image } from '../../images/entities/Image';
-import { CommonEntity } from "../../common/CommonEntity";
+import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('starships')
-export class Starship extends CommonEntity{
+export class Starship extends CommonEntity {
   @Column({ unique: true })
   name: string;
 
