@@ -10,6 +10,7 @@ import { PageInterceptor } from './interceptors/page.interceptor';
 import { PlanetsModule } from './planets/planets.module';
 import { SpeciesModule } from './species/species.module';
 import { ImageModule } from './images/image.module';
+import { StarshipsModule } from './starships/starships.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ImageModule } from './images/image.module';
     PeopleModule,
     FilmsModule,
     SpeciesModule,
+    StarshipsModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     ImageModule,
   ],

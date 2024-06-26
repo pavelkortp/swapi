@@ -8,13 +8,12 @@ import { UniqueNameChecker } from '../declarations';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starship } from './entities/Starship';
 import { ILike, Repository } from 'typeorm';
-import { People } from '../people/entities/People';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
-import { UpdatePeopleDTO } from '../people/dto/update-people.dto';
 import { Image } from '../images/entities/Image';
 import { CreateStarshipDTO } from './dto/create-starship.dto';
 import { ImageService } from '../images/image.service';
+import { UpdateStarshipDTO } from './dto/update-starship.dto';
 
 @Injectable()
 export class StarshipsService implements UniqueNameChecker {
@@ -94,7 +93,7 @@ export class StarshipsService implements UniqueNameChecker {
    */
   async update(
     id: number,
-    p: UpdatePeopleDTO,
+    p: UpdateStarshipDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<Starship> {
     let pImages: Image[];
