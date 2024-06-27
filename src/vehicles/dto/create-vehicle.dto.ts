@@ -1,0 +1,54 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
+
+export class CreateVehicleDTO {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  model: string;
+
+  @ApiProperty()
+  @IsString()
+  manufacturer: string;
+
+  @ApiProperty()
+  @IsString()
+  cost_in_credits: string;
+
+  @ApiProperty()
+  @IsString()
+  length: string;
+
+  @ApiProperty()
+  @IsString()
+  max_atmosphering_speed: string;
+
+  @ApiProperty()
+  @IsString()
+  crew: string;
+
+  @ApiProperty()
+  @IsString()
+  passengers: string;
+
+  @ApiProperty()
+  @IsString()
+  cargo_capacity: string;
+
+  @ApiProperty()
+  @IsString()
+  consumables: string;
+
+  @ApiProperty()
+  @IsString()
+  vehicle_class: string;
+
+  pilots = [];
+
+  films = [];
+
+  images = [];
+}
