@@ -57,5 +57,6 @@ export class GetStarshipDTO extends PresentDTO {
   constructor(s: Starship) {
     super(s);
     this.setKeys(s);
+    this.url = this.toLink('starships', s.id);
   }
 }
