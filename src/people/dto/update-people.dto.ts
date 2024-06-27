@@ -58,13 +58,11 @@ export class UpdatePeopleDTO {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true })
   films?: number[];
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true })
   species?: number[];
 
   @ApiProperty()

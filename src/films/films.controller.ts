@@ -39,19 +39,19 @@ export class FilmsController {
     return new GetFilmDTO(await this.service.create(f, images));
   }
 
-  // @Get('copy')
-  // async copyPeople(): Promise<void> {
-  //   let response: Response = await fetch('https://swapi.py4e.com/api/films');
-  //   let res: { next: string; results: CreateFilmDTO[] } = await response.json();
-  //   do {
-  //     for (const e of res.results) {
-  //       await this.service.create(e);
-  //     }
-  //
-  //     response = await fetch(res.next);
-  //     res = await response.json();
-  //   } while (res.next);
-  // }
+  @Get('copy')
+  async copyPeople(): Promise<void> {
+    let response: Response = await fetch('https://swapi.py4e.com/api/films');
+    let res: { next: string; results: CreateFilmDTO[] } = await response.json();
+    do {
+      for (const e of res.results) {
+        await this.service.create(e);
+      }
+
+      response = await fetch(res.next);
+      res = await response.json();
+    } while (res.next);
+  }
 
   @Get()
   async getAll(

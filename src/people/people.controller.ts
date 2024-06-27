@@ -22,6 +22,7 @@ import { People } from './entities/People';
 import { Page } from '../declarations';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
+import { CreateSpecieDTO } from "../species/dto/create-specie.dto";
 
 @ApiTags(`people`)
 @Controller('people')
@@ -52,6 +53,22 @@ export class PeopleController {
     };
   }
 
+  @Get('copy')
+  async copyPeople(): Promise<void> {
+    let response: Response = await fetch('https://swapi.dev/api/people');
+    let res: { next: string; results: CreatePeopleDTO[] } =
+      await response.json();
+    do {
+      for (const e of res.results) {
+        e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
+        await this.service.create(e);
+      }
+
+      response = await fetch(res.next);
+      res = await response.json();
+    } while (res.next);
+  }
+
   @Get(':id')
   async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDTO> {
     const p: People = await this.service.findOne(id);
@@ -66,7 +83,6 @@ export class PeopleController {
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
-    console.log();
     return new GetPeopleDTO(await this.service.update(id, p, images));
   }
 

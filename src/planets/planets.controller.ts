@@ -73,4 +73,23 @@ export class PlanetsController {
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.service.remove(id);
   }
+
+
+  @Get('copy')
+  async copyPeople(): Promise<void> {
+    let response: Response = await fetch('https://swapi.dev/api/planets');
+
+    let res: { next: string; results: CreatePlanetDTO[] } =
+      await response.json();
+    console.log(res);
+    do {
+      for (const e of res.results) {
+
+        await this.service.create(e);
+      }
+
+      response = await fetch(res.next);
+      res = await response.json();
+    } while (res.next);
+  }
 }

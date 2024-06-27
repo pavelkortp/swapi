@@ -12,8 +12,8 @@ export class People extends CommonEntity {
   @Column({ unique: true })
   name: string;
 
-  @Column()
-  birth_year: string;
+  @Column({nullable:true})
+  birth_year: string | null;
 
   @Column()
   eye_color: string;

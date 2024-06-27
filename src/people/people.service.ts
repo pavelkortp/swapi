@@ -13,13 +13,15 @@ import { UpdatePeopleDTO } from './dto/update-people.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
 import { ImageService } from '../images/image.service';
-import { Image } from '../images/entities/Image';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PeopleService implements UniqueNameChecker {
   constructor(
     @Inject(forwardRef(() => ImageService))
     private imageService: ImageService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
     @InjectRepository(People)
     private repository: Repository<People>,
   ) {}
@@ -103,13 +105,27 @@ export class PeopleService implements UniqueNameChecker {
     p: UpdatePeopleDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<People> {
-    let pImages: Image[];
-    if (images) {
-      pImages = await this.imageService.saveAll(images);
-    }
+    // let pImages: Image[];
+    // if (images) {
+    //   pImages = await this.imageService.saveAll(images);
+    // }
+
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
-    existingPeople.images = pImages;
+    if(p.films){
+      existingPeople.films = await this.commonService.getFilms(p.films);
+    }
+
+    if(p.species){
+      existingPeople.species = await this.commonService.getSpecies(p.species);
+    }
+    if(p.vehicles){
+      existingPeople.vehicles = await this.commonService.getVehicles(p.vehicles);
+    }
+    if(p.starships){
+      existingPeople.starships = await this.commonService.getStarships(p.starships);
+    }
+
     await this.repository.save(existingPeople, { reload: true });
     return existingPeople;
   }

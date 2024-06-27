@@ -41,12 +41,11 @@ export class SpeciesController {
 
   @Get('copy')
   async copyPeople(): Promise<void> {
-    let response: Response = await fetch('https://swapi.py4e.com/api/species');
+    let response: Response = await fetch('https://swapi.dev/api/species');
     let res: { next: string; results: CreateSpecieDTO[] } =
       await response.json();
     do {
       for (const e of res.results) {
-        e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
         await this.service.create(e);
       }
 
@@ -60,9 +59,9 @@ export class SpeciesController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
   ): Promise<Page<GetSpeciesDto>> {
-    const [films, count] = await this.service.findAll(page, name);
+    const [species, count] = await this.service.findAll(page, name);
     return {
-      items: films.map((p) => new GetSpeciesDto(p)),
+      items: species.map((p) => new GetSpeciesDto(p)),
       count,
       page,
     };
