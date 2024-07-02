@@ -23,7 +23,15 @@ import { Starship } from '../starships/entities/Starship';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([People, Image, Specie, Film, Vehicle, Planet, Starship]),
+    TypeOrmModule.forFeature([
+      People,
+      Image,
+      Specie,
+      Film,
+      Vehicle,
+      Planet,
+      Starship,
+    ]),
     ImageModule,
     MulterModule.registerAsync({
       useClass: MulterConfigService,

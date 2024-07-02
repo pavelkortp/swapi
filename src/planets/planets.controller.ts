@@ -35,8 +35,6 @@ export class PlanetsController {
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPlanetDTO> {
-    console.log(images);
-    console.log(p);
     return new GetPlanetDTO(await this.service.create(p, images));
   }
 
@@ -74,7 +72,6 @@ export class PlanetsController {
     await this.service.remove(id);
   }
 
-
   @Get('copy')
   async copyPeople(): Promise<void> {
     let response: Response = await fetch('https://swapi.dev/api/planets');
@@ -84,7 +81,6 @@ export class PlanetsController {
     console.log(res);
     do {
       for (const e of res.results) {
-
         await this.service.create(e);
       }
 

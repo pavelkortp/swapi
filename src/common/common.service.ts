@@ -16,19 +16,19 @@ import { Starship } from '../starships/entities/Starship';
 @Injectable()
 export class CommonService {
   constructor(
-    @Inject(forwardRef(()=> ImageService))
+    @Inject(forwardRef(() => ImageService))
     private imageService: ImageService,
-    @Inject(forwardRef(()=> PeopleService))
+    @Inject(forwardRef(() => PeopleService))
     private peopleService: PeopleService,
-    @Inject(forwardRef(()=> FilmsService))
+    @Inject(forwardRef(() => FilmsService))
     private filmsService: FilmsService,
-    @Inject(forwardRef(()=> PlanetsService))
+    @Inject(forwardRef(() => PlanetsService))
     private planetsService: PlanetsService,
-    @Inject(forwardRef(()=> VehicleService))
+    @Inject(forwardRef(() => VehicleService))
     private vehicleService: VehicleService,
-    @Inject(forwardRef(()=> StarshipsService))
+    @Inject(forwardRef(() => StarshipsService))
     private starshipService: StarshipsService,
-    @Inject(forwardRef(()=> SpeciesService))
+    @Inject(forwardRef(() => SpeciesService))
     private specieService: SpeciesService,
   ) {}
 
@@ -67,6 +67,4 @@ export class CommonService {
       ids.map(async (id) => await this.starshipService.findOne(id)),
     );
   }
-
-
 }

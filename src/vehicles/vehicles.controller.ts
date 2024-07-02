@@ -23,7 +23,6 @@ import { Vehicle } from './entities/Vehicle';
 import { GetVehicleDTO } from './dto/get-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
 import { CreateVehicleDTO } from './dto/create-vehicle.dto';
-import { CreateSpecieDTO } from '../species/dto/create-specie.dto';
 
 @ApiTags('Vehicles')
 @Controller('vehicles')

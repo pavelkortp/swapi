@@ -68,12 +68,10 @@ export class UpdatePeopleDTO {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true })
   vehicles?: number[];
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsInt({ each: true })
   starships?: number[];
 }

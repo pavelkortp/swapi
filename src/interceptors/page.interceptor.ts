@@ -41,7 +41,6 @@ const processMany = (
     o.page * ITEMS_PER_PAGE < o.count ? o.page + 1 : null;
   const prevPage: number = o.page > 1 ? o.page - 1 : null;
   const url: string = context.switchToHttp().getRequest().url;
-  console.log(o.items);
   return {
     count: o.count.toString(),
     next: nextPage ? `http://localhost:3000${url}/?page=${nextPage}` : 'null',

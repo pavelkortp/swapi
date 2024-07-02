@@ -22,7 +22,6 @@ import { People } from './entities/People';
 import { Page } from '../declarations';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
-import { CreateSpecieDTO } from "../species/dto/create-specie.dto";
 
 @ApiTags(`people`)
 @Controller('people')
@@ -36,7 +35,6 @@ export class PeopleController {
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
-    console.log(p);
     return new GetPeopleDTO(await this.service.create(p, images));
   }
 
@@ -79,10 +77,11 @@ export class PeopleController {
   @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) p: UpdatePeopleDTO,
+    @Body() p: UpdatePeopleDTO,
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetPeopleDTO> {
+    console.log(p);
     return new GetPeopleDTO(await this.service.update(id, p, images));
   }
 

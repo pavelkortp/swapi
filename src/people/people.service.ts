@@ -17,6 +17,15 @@ import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PeopleService implements UniqueNameChecker {
+  private readonly relations = [
+    'films',
+    'homeworld',
+    'vehicles',
+    'starships',
+    'species',
+    'images',
+  ];
+
   constructor(
     @Inject(forwardRef(() => ImageService))
     private imageService: ImageService,
@@ -38,14 +47,7 @@ export class PeopleService implements UniqueNameChecker {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: [
-        'films',
-        'homeworld',
-        'vehicles',
-        'starships',
-        'species',
-        'images',
-      ],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -58,7 +60,7 @@ export class PeopleService implements UniqueNameChecker {
   async findOne(id: number): Promise<People> {
     const res: People | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld', 'starships', 'species', 'images'],
+      relations: this.relations,
     });
     if (!res) {
       throw new NotFoundException();
@@ -105,29 +107,42 @@ export class PeopleService implements UniqueNameChecker {
     p: UpdatePeopleDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<People> {
-    // let pImages: Image[];
-    // if (images) {
-    //   pImages = await this.imageService.saveAll(images);
-    // }
-
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
-    if(p.films){
-      existingPeople.films = await this.commonService.getFilms(p.films);
+    if (images) {
+      existingPeople.images = await this.imageService.saveAll(images);
     }
 
-    if(p.species){
-      existingPeople.species = await this.commonService.getSpecies(p.species);
-    }
-    if(p.vehicles){
-      existingPeople.vehicles = await this.commonService.getVehicles(p.vehicles);
-    }
-    if(p.starships){
-      existingPeople.starships = await this.commonService.getStarships(p.starships);
+    if (p.homeworld) {
+      existingPeople.homeworld = (
+        await this.commonService.getPlanets([parseInt(p.homeworld)])
+      )[0];
     }
 
+    if (p.films) {
+      existingPeople.films = await this.commonService.getFilms([
+        ...new Set<number>(p.films),
+      ]);
+    }
+
+    if (p.species) {
+      existingPeople.species = await this.commonService.getSpecies([
+        ...new Set<number>(p.species),
+      ]);
+    }
+    if (p.vehicles) {
+      existingPeople.vehicles = await this.commonService.getVehicles([
+        ...new Set<number>(p.vehicles),
+      ]);
+    }
+    if (p.starships) {
+      existingPeople.starships = await this.commonService.getStarships([
+        ...new Set<number>(p.starships),
+      ]);
+    }
+    console.log(existingPeople);
     await this.repository.save(existingPeople, { reload: true });
-    return existingPeople;
+    return this.findOne(id);
   }
 
   public async isUniqueName(name: string): Promise<boolean> {

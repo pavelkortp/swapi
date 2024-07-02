@@ -34,8 +34,6 @@ export class SpeciesController {
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetSpeciesDto> {
-    console.log(images);
-    console.log(f);
     return new GetSpeciesDto(await this.service.create(f, images));
   }
 

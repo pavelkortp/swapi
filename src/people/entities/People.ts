@@ -12,7 +12,7 @@ export class People extends CommonEntity {
   @Column({ unique: true })
   name: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   birth_year: string | null;
 
   @Column()
