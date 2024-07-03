@@ -13,15 +13,27 @@ import { UpdateFilmDTO } from './dto/update-film.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
 import { ImageService } from '../images/image.service';
+import { CommonService } from '../common/common.service';
 import { Image } from '../images/entities/Image';
 
 @Injectable()
 export class FilmsService implements UniqueNameChecker {
+  private readonly relations = [
+    'characters',
+    'planets',
+    'starships',
+    'vehicles',
+    'species',
+    'images',
+  ];
+
   constructor(
     @Inject(forwardRef(() => ImageService))
     private imageService: ImageService,
     @InjectRepository(Film)
     private repository: Repository<Film>,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
   ) {}
 
   /**
@@ -36,14 +48,7 @@ export class FilmsService implements UniqueNameChecker {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: [
-        'characters',
-        'planets',
-        'starships',
-        'vehicles',
-        'species',
-        'images',
-      ],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -56,14 +61,7 @@ export class FilmsService implements UniqueNameChecker {
   async findOne(id: number): Promise<Film> {
     const res: Film = await this.repository.findOne({
       where: { id },
-      relations: [
-        'characters',
-        'planets',
-        'starships',
-        'vehicles',
-        'species',
-        'images',
-      ],
+      relations: this.relations,
     });
     if (!res) {
       throw new NotFoundException();
@@ -82,14 +80,15 @@ export class FilmsService implements UniqueNameChecker {
   /**
    * Creates new films.
    * @param f new film.
-   * @param images
+   * @param images images for film.
+   * @return Created film.
    */
   async create(
     f: CreateFilmDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<Film> {
     const filmEntity: Film = plainToClass(Film, f);
-    let fImages = [];
+    let fImages: Image[] = [];
 
     if (images) {
       fImages = await this.imageService.saveAll(images);
@@ -103,20 +102,49 @@ export class FilmsService implements UniqueNameChecker {
    * @param id film id.
    * @param f new film.
    * @param images
+   * @return Updated film.
    */
   async update(
     id: number,
     f: UpdateFilmDTO,
     images?: Array<Express.Multer.File>,
-  ): Promise<void> {
-    let pImages: Image[];
-    if (images) {
-      pImages = await this.imageService.saveAll(images);
-    }
+  ): Promise<Film> {
     const existingFilm: Film = await this.repository.findOneBy({ id });
     Object.assign(existingFilm, f);
-    existingFilm.images = pImages;
+    if (images) {
+      existingFilm.images = await this.imageService.saveAll(images);
+    }
+
+    if (f.characters) {
+      existingFilm.characters = await this.commonService.getPeople([
+        ...new Set<number>(f.characters),
+      ]);
+    }
+
+    if (f.planets) {
+      existingFilm.planets = await this.commonService.getPlanets([
+        ...new Set<number>(f.planets),
+      ]);
+    }
+
+    if (f.species) {
+      existingFilm.species = await this.commonService.getSpecies([
+        ...new Set<number>(f.species),
+      ]);
+    }
+    if (f.vehicles) {
+      existingFilm.vehicles = await this.commonService.getVehicles([
+        ...new Set<number>(f.vehicles),
+      ]);
+    }
+    if (f.starships) {
+      existingFilm.starships = await this.commonService.getStarships([
+        ...new Set<number>(f.starships),
+      ]);
+    }
+    console.log(existingFilm);
     await this.repository.save(existingFilm, { reload: true });
+    return this.findOne(id);
   }
 
   async isUniqueName(name: string): Promise<boolean> {

@@ -34,8 +34,6 @@ export class FilmsController {
     @UploadedFiles(OptionalImagePipe)
     images?: Array<Express.Multer.File>,
   ): Promise<GetFilmDTO> {
-    console.log(images);
-    console.log(f);
     return new GetFilmDTO(await this.service.create(f, images));
   }
 
