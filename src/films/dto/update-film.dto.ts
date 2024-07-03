@@ -44,4 +44,28 @@ export class UpdateFilmDTO {
   @IsInt({ each: true })
   @IsOptional()
   characters?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  planets?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  starships?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  vehicles?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  species?: number[];
 }
