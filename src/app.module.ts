@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PeopleModule } from './people/people.module';
 import { dataSourceOptions } from './database/config';
-import { FilmsModule } from './films/films.module';
+import { FilmModule } from './films/film.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PageInterceptor } from './interceptors/page.interceptor';
 import { PlanetsModule } from './planets/planets.module';
@@ -17,7 +17,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
   imports: [
     PlanetsModule,
     PeopleModule,
-    FilmsModule,
+    FilmModule,
     SpeciesModule,
     StarshipsModule,
     VehiclesModule,

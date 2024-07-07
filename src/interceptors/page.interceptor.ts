@@ -7,20 +7,20 @@ import {
 import { map, Observable } from 'rxjs';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { Page, ResponsePage } from '../declarations';
-import { PresentDTO } from '../common/present.dto';
+import { PresentDto } from '../common/present.dto';
 
 @Injectable()
 export class PageInterceptor
   implements
     NestInterceptor<
-      PresentDTO | Page<PresentDTO>,
-      PresentDTO | ResponsePage<PresentDTO>
+      PresentDto | Page<PresentDto>,
+      PresentDto | ResponsePage<PresentDto>
     >
 {
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Promise<Observable<PresentDTO | ResponsePage<PresentDTO>>> {
+  ): Promise<Observable<PresentDto | ResponsePage<PresentDto>>> {
     return next.handle().pipe(
       map((response) => {
         if (response?.count) {
@@ -35,8 +35,8 @@ export class PageInterceptor
 
 const processMany = (
   context: ExecutionContext,
-  o: Page<PresentDTO>,
-): ResponsePage<PresentDTO> => {
+  o: Page<PresentDto>,
+): ResponsePage<PresentDto> => {
   const nextPage: number =
     o.page * ITEMS_PER_PAGE < o.count ? o.page + 1 : null;
   const prevPage: number = o.page > 1 ? o.page - 1 : null;
