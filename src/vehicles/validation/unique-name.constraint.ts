@@ -11,7 +11,7 @@ export class UniqueNameConstraint implements ValidatorConstraintInterface {
   constructor(@Inject(VehicleService) private service: VehicleService) {}
 
   defaultMessage(): string {
-    return 'Row with current name already exists';
+    return 'Vehicle with current name already exists';
   }
 
   async validate(value: string): Promise<boolean> {

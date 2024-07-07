@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Vehicle } from './entities/Vehicle';
+import { Vehicle } from './entities/vehicle.entity';
 import { VehicleService } from './vehicle.service';
 import { VehiclesController } from './vehicles.controller';
 import { UniqueNameConstraint } from './validation/unique-name.constraint';

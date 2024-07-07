@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Validate } from 'class-validator';
+import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
-export class CreateVehicleDTO {
+export class CreateVehicleDto {
   @ApiProperty()
   @IsString()
+  @Validate(UniqueNameConstraint)
   name: string;
 
   @ApiProperty()

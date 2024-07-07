@@ -4,7 +4,6 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
-  Inject,
   Param,
   ParseIntPipe,
   Patch,
@@ -19,46 +18,40 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 import { Page } from '../declarations';
 import { VehicleService } from './vehicle.service';
-import { Vehicle } from './entities/Vehicle';
-import { GetVehicleDTO } from './dto/get-vehicle.dto';
+import { GetVehicleDto } from './dto/get-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
-import { CreateVehicleDTO } from './dto/create-vehicle.dto';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
 
 @ApiTags('Vehicles')
 @Controller('vehicles')
 export class VehiclesController {
-  constructor(
-    @Inject(VehicleService)
-    private service: VehicleService,
-  ) {}
+  constructor(private service: VehicleService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) v: CreateVehicleDTO,
-    @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetVehicleDTO> {
-    return new GetVehicleDTO(await this.service.create(v, images));
+    @Body(ValidationPipe) v: CreateVehicleDto,
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
+  ): Promise<GetVehicleDto> {
+    return new GetVehicleDto(await this.service.create(v, images));
   }
 
   @Get()
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
-  ): Promise<Page<GetVehicleDTO>> {
+  ): Promise<Page<GetVehicleDto>> {
     const [vehicles, count] = await this.service.findAll(page, name);
     return {
-      items: vehicles.map((p) => new GetVehicleDTO(p)),
+      items: vehicles.map((vehicle) => new GetVehicleDto(vehicle)),
       count,
       page,
     };
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetVehicleDTO> {
-    const v: Vehicle = await this.service.findOne(id);
-    return new GetVehicleDTO(v);
+  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetVehicleDto> {
+    return new GetVehicleDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
@@ -66,14 +59,13 @@ export class VehiclesController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdateVehicleDTO,
-    @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetVehicleDTO> {
-    return new GetVehicleDTO(await this.service.update(id, p, images));
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
+  ): Promise<GetVehicleDto> {
+    return new GetVehicleDto(await this.service.update(id, p, images));
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.service.remove(id);
   }
 

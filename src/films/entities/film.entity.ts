@@ -9,7 +9,7 @@ import { People } from '../../people/entities/people.entity';
 import { Planet } from '../../planets/entities/planet.entity';
 import { Specie } from '../../species/entities/specie.entity';
 import { Starship } from '../../starships/entities/starship.entity';
-import { Vehicle } from '../../vehicles/entities/Vehicle';
+import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 import { Image } from '../../images/entities/image.entity';
 import { CommonEntity } from '../../common/CommonEntity';
 
