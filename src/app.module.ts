@@ -11,7 +11,7 @@ import { PlanetsModule } from './planets/planets.module';
 import { SpeciesModule } from './species/species.module';
 import { ImageModule } from './images/image.module';
 import { StarshipsModule } from './starships/starships.module';
-import { VehicleModule } from './vehicles/vehicle.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { VehicleModule } from './vehicles/vehicle.module';
     FilmsModule,
     SpeciesModule,
     StarshipsModule,
-    VehicleModule,
+    VehiclesModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     ImageModule,
   ],
