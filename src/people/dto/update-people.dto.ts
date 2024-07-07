@@ -1,17 +1,18 @@
 import {
   IsArray,
   IsInt,
-  IsNumber,
-  isNumberString,
   IsNumberString,
   IsOptional,
   IsString,
+  Validate,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
-export class UpdatePeopleDTO {
+export class UpdatePeopleDto {
   @ApiProperty()
   @IsOptional()
+  @Validate(UniqueNameConstraint)
   @IsString()
   name?: string;
 
@@ -62,16 +63,19 @@ export class UpdatePeopleDTO {
 
   @ApiProperty()
   @IsOptional()
+  @IsInt({ each: true })
   @IsArray()
   species?: number[];
 
   @ApiProperty()
   @IsOptional()
+  @IsInt({ each: true })
   @IsArray()
   vehicles?: number[];
 
   @ApiProperty()
   @IsOptional()
+  @IsInt({ each: true })
   @IsArray()
   starships?: number[];
 }

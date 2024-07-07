@@ -14,11 +14,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { CreatePeopleDTO } from './dto/create-people.dto';
-import { UpdatePeopleDTO } from './dto/update-people.dto';
+import { CreatePeopleDto } from './dto/create-people.dto';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { GetPeopleDTO } from './dto/get-people.dto';
-import { People } from './entities/People';
+import { GetPeopleDto } from './dto/get-people.dto';
+import { People } from './entities/people.entity';
 import { Page } from '../declarations';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
@@ -31,21 +31,20 @@ export class PeopleController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) p: CreatePeopleDTO,
-    @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetPeopleDTO> {
-    return new GetPeopleDTO(await this.service.create(p, images));
+    @Body(ValidationPipe) p: CreatePeopleDto,
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
+  ): Promise<GetPeopleDto> {
+    return new GetPeopleDto(await this.service.create(p, images));
   }
 
   @Get()
-  async getAll(
+  async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
-  ): Promise<Page<GetPeopleDTO>> {
+  ): Promise<Page<GetPeopleDto>> {
     const [people, count] = await this.service.findAll(page, name);
     return {
-      items: people.map((p) => new GetPeopleDTO(p)),
+      items: people.map((p) => new GetPeopleDto(p)),
       count,
       page,
     };
@@ -54,7 +53,7 @@ export class PeopleController {
   @Get('copy')
   async copyPeople(): Promise<void> {
     let response: Response = await fetch('https://swapi.dev/api/people');
-    let res: { next: string; results: CreatePeopleDTO[] } =
+    let res: { next: string; results: CreatePeopleDto[] } =
       await response.json();
     do {
       for (const e of res.results) {
@@ -69,25 +68,23 @@ export class PeopleController {
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDTO> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDto> {
     const p: People = await this.service.findOne(id);
-    return new GetPeopleDTO(p);
+    return new GetPeopleDto(p);
   }
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() p: UpdatePeopleDTO,
-    @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetPeopleDTO> {
-    console.log(p);
-    return new GetPeopleDTO(await this.service.update(id, p, images));
+    @Body(ValidationPipe) p: UpdatePeopleDto,
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
+  ): Promise<GetPeopleDto> {
+    return new GetPeopleDto(await this.service.update(id, p, images));
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.service.remove(id);
   }
 }

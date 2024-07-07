@@ -7,7 +7,7 @@ import {
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreatePeopleDTO {
+export class CreatePeopleDto {
   @ApiProperty()
   @IsString()
   @Validate(UniqueNameConstraint)

@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { PeopleController } from './people.controller';
 import { PeopleService } from './people.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { People } from './entities/People';
+import { People } from './entities/people.entity';
 import { UniqueNameConstraint } from './validation/unique-name.constraint';
 import { MulterModule } from '@nestjs/platform-express';
 import { MulterConfigService } from '../middlewares/multer-config.service';
