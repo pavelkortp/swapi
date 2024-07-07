@@ -1,9 +1,8 @@
-import { PresentDTO } from '../../common/present.dto';
+import { PresentDto } from '../../common/present.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { People } from '../../people/entities/People';
-import { Planet } from '../entities/Planet';
+import { Planet } from '../entities/planet.entity';
 
-export class GetPlanetDTO extends PresentDTO {
+export class GetPlanetDto extends PresentDto {
   @ApiProperty()
   name: string;
 

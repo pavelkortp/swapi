@@ -14,12 +14,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-
 import { PlanetsService } from './planets.service';
-import { CreatePlanetDTO } from './dto/create-planet.dto';
-import { UpdatePlanetDTO } from './dto/update-planet.dto';
+import { CreatePlanetDto } from './dto/create-planet.dto';
+import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { Page } from '../declarations';
-import { GetPlanetDTO } from './dto/get-planet.dto';
+import { GetPlanetDto } from './dto/get-planet.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
@@ -31,40 +30,40 @@ export class PlanetsController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) p: CreatePlanetDTO,
+    @Body(ValidationPipe) p: CreatePlanetDto,
     @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetPlanetDTO> {
-    return new GetPlanetDTO(await this.service.create(p, images));
+    images?: Express.Multer.File[],
+  ): Promise<GetPlanetDto> {
+    return new GetPlanetDto(await this.service.create(p, images));
   }
 
   @Get()
-  async getAll(
+  async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name: string,
-  ): Promise<Page<GetPlanetDTO>> {
+  ): Promise<Page<GetPlanetDto>> {
     const [planets, count] = await this.service.findAll(page, name);
     return {
-      items: planets.map((p) => new GetPlanetDTO(p)),
+      items: planets.map((p) => new GetPlanetDto(p)),
       count,
       page,
     };
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetPlanetDTO> {
-    return new GetPlanetDTO(await this.service.findOne(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetPlanetDto> {
+    return new GetPlanetDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) p: UpdatePlanetDTO,
+    @Body(ValidationPipe) p: UpdatePlanetDto,
     @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetPlanetDTO> {
-    return new GetPlanetDTO(await this.service.update(id, p, images));
+    images?: Express.Multer.File[],
+  ): Promise<GetPlanetDto> {
+    return new GetPlanetDto(await this.service.update(id, p, images));
   }
 
   @Delete(':id')
@@ -73,10 +72,10 @@ export class PlanetsController {
   }
 
   @Get('copy')
-  async copyPeople(): Promise<void> {
+  async copyPlanets(): Promise<void> {
     let response: Response = await fetch('https://swapi.dev/api/planets');
 
-    let res: { next: string; results: CreatePlanetDTO[] } =
+    let res: { next: string; results: CreatePlanetDto[] } =
       await response.json();
     console.log(res);
     do {

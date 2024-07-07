@@ -5,16 +5,20 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ILike, Repository } from 'typeorm';
-import { Planet } from './entities/Planet';
+import { Planet } from './entities/planet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { UpdatePlanetDTO } from './dto/update-planet.dto';
-import { CreatePlanetDTO } from './dto/create-planet.dto';
+import { UpdatePlanetDto } from './dto/update-planet.dto';
+import { CreatePlanetDto } from './dto/create-planet.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { CommonService } from '../common/common.service';
+import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class PlanetsService {
+  /**
+   * Db entity relations.
+   */
   private readonly relations = ['films', 'images', 'residents'];
 
   constructor(
@@ -25,9 +29,12 @@ export class PlanetsService {
   ) {}
 
   /**
-   * Returns all Planets by page.
-   * @param page page from planets list
-   * @param name
+   * Returns last 10 planets by the specified page and name, as well as the total
+   * number of planets. If you use the title search, the total number of
+   * planets with this name is returned.
+   * @param page Number of page.
+   * @param name Filter for planets name.
+   * @return Array of planets at 0 index and count at index 1
    */
   async findAll(page: number, name?: string): Promise<[Planet[], number]> {
     console.log(name);
@@ -46,8 +53,9 @@ export class PlanetsService {
 
   /**
    * Searches Planet by id and return result.
-   * @param id Planet id.
-   * @return found Planet or null.
+   * @param id Planet's id.
+   * @throws NotFoundException If Planet with current id not found.
+   * @return Found Planet.
    */
   async findOne(id: number): Promise<Planet> {
     const res: Planet | null = await this.repository.findOne({
@@ -62,57 +70,64 @@ export class PlanetsService {
 
   /**
    * Removes Planet by id.
-   * @param id Planet id.
+   * @param id Planet's id.
+   * @throws NotFoundException If Planet with current id not found.
    */
   async remove(id: number): Promise<void> {
+    await this.findOne(id);
     await this.repository.delete(id);
   }
 
   /**
    * Creates new Planet.
-   * @param p new Planet.
-   * @param images
+   * @param planet New Planet.
+   * @param images images for Planet.
+   * @throws BadGatewayException If something went wrong with db
+   * @return Created Planet.
    */
   async create(
-    p: CreatePlanetDTO,
-    images?: Array<Express.Multer.File>,
+    planet: CreatePlanetDto,
+    images?: Express.Multer.File[],
   ): Promise<Planet> {
-    const planet: Planet = plainToClass(Planet, p);
-    let pImages = [];
+    const planetEntity: Planet = plainToClass(Planet, planet);
+    let pImages: Image[] = [];
 
     if (images) {
-      pImages = await this.commonService.saveAll(images);
+      pImages = await this.commonService.saveImages(images);
     }
 
-    planet.images = pImages;
-    return await this.repository.save(planet);
+    planetEntity.images = pImages;
+    return await this.repository.save(planetEntity);
   }
 
   /**
-   * Updates planets, by changing exists on current.
-   * @param id planet id.
-   * @param p new planet.
-   * @param images
+   * Updates planet, by changing exists on current.
+   * @param id Planet id.
+   * @param planet New Planet.
+   * @param images new Images for Planet.
+   * @return Updated Planet.
    */
   async update(
     id: number,
-    p: UpdatePlanetDTO,
-    images: Array<Express.Multer.File>,
+    planet: UpdatePlanetDto,
+    images: Express.Multer.File[],
   ): Promise<Planet> {
     const existingPlanet: Planet = await this.findOne(id);
-    Object.assign(existingPlanet, p);
+    Object.assign(existingPlanet, planet);
     if (images) {
-      existingPlanet.images = await this.commonService.saveAll(images);
+      existingPlanet.images = await this.commonService.saveImages(images);
     }
 
-    if (p.residents) {
-      existingPlanet.residents = await this.commonService.getPeople(
-        p.residents,
-      );
+    if (planet.residents) {
+      existingPlanet.residents = await this.commonService.getPeople([
+        ...new Set<number>(planet.residents),
+      ]);
     }
 
-    if (p.films) {
-      existingPlanet.films = await this.commonService.getFilms(p.films);
+    if (planet.films) {
+      existingPlanet.films = await this.commonService.getFilms([
+        ...new Set<number>(planet.films),
+      ]);
     }
 
     await this.repository.save(existingPlanet, { reload: true });
