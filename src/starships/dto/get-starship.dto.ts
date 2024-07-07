@@ -1,9 +1,9 @@
-import { PresentDTO } from '../../common/present.dto';
+import { PresentDto } from '../../common/present.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
-import { Starship } from '../entities/Starship';
+import { Starship } from '../entities/starship.entity';
 
-export class GetStarshipDTO extends PresentDTO {
+export class GetStarshipDto extends PresentDto {
   @ApiProperty()
   name: string;
 

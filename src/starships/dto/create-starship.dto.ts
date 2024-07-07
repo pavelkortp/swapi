@@ -1,12 +1,8 @@
-import { Column, JoinTable, ManyToMany } from 'typeorm';
-import { People } from '../../people/entities/People';
-import { Film } from '../../films/entities/Film';
-import { Image } from '../../images/entities/Image';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Validate } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
-export class CreateStarshipDTO {
+export class CreateStarshipDto {
   @ApiProperty()
   @IsString()
   @Validate(UniqueNameConstraint)

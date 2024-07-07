@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { Film } from '../../films/entities/Film';
-import { People } from '../../people/entities/People';
-import { Image } from '../../images/entities/Image';
+import { Film } from '../../films/entities/film.entity';
+import { People } from '../../people/entities/people.entity';
+import { Image } from '../../images/entities/image.entity';
 import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('starships')

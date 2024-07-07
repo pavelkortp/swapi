@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
-export class UpdateStarshipDTO {
+export class UpdateStarshipDto {
   @ApiProperty()
   @IsString()
   @Validate(UniqueNameConstraint)
@@ -87,9 +87,9 @@ export class UpdateStarshipDTO {
   @IsInt({ each: true })
   films?: number[];
 
-  @ApiProperty()
-  @IsOptional()
-  @IsArray()
-  @IsInt({ each: true })
-  images?: number[];
+  // @ApiProperty()
+  // @IsOptional()
+  // @IsArray()
+  // @IsInt({ each: true })
+  // images?: number[];
 }
