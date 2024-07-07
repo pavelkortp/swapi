@@ -12,6 +12,7 @@ import { Specie } from '../species/entities/Specie';
 import { Planet } from '../planets/entities/Planet';
 import { Vehicle } from '../vehicles/entities/Vehicle';
 import { Starship } from '../starships/entities/Starship';
+import { Image } from '../images/entities/Image';
 
 @Injectable()
 export class CommonService {
@@ -66,5 +67,9 @@ export class CommonService {
     return Promise.all(
       ids.map(async (id) => await this.starshipService.findOne(id)),
     );
+  }
+
+  async saveAll(images: Array<Express.Multer.File>): Promise<Image[]> {
+    return await this.imageService.saveAll(images);
   }
 }
