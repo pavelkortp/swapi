@@ -14,8 +14,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateFilmDTO } from './dto/create-film.dto';
-import { FilmsService } from './films.service';
-import { UpdateFilmDTO } from './dto/update-film.dto';
+import { FilmService } from './film.service';
+import { UpdateFilmDto } from './dto/update-film.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Page } from '../declarations';
 import { GetFilmDTO } from './dto/get-film.dto';
@@ -24,8 +24,8 @@ import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
 @ApiTags('films')
 @Controller('films')
-export class FilmsController {
-  constructor(private service: FilmsService) {}
+export class FilmController {
+  constructor(private service: FilmService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -52,7 +52,7 @@ export class FilmsController {
   }
 
   @Get()
-  async getAll(
+  async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
   ): Promise<Page<GetFilmDTO>> {
@@ -72,7 +72,7 @@ export class FilmsController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) f: UpdateFilmDTO,
+    @Body(ValidationPipe) f: UpdateFilmDto,
   ): Promise<void> {
     await this.service.update(id, f);
   }

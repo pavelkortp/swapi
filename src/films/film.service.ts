@@ -1,22 +1,26 @@
 import {
+  BadGatewayException,
   forwardRef,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Film } from './entities/Film';
+import { Film } from './entities/film.entity';
 import { ILike, Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
 import { CreateFilmDTO } from './dto/create-film.dto';
-import { UpdateFilmDTO } from './dto/update-film.dto';
+import { UpdateFilmDto } from './dto/update-film.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
 import { CommonService } from '../common/common.service';
 import { Image } from '../images/entities/Image';
 
 @Injectable()
-export class FilmsService implements UniqueNameChecker {
+export class FilmService implements UniqueNameChecker {
+  /**
+   * Db entity relations.
+   */
   private readonly relations = [
     'characters',
     'planets',
@@ -31,10 +35,16 @@ export class FilmsService implements UniqueNameChecker {
     private repository: Repository<Film>,
     @Inject(forwardRef(() => CommonService))
     private commonService: CommonService,
-  ) {}
+  ) {
+  }
 
   /**
-   * Returns all films.
+   * Returns last 10 films by the specified page and title, as well as the total
+   * number of films. If you use the title search, the total number of
+   * films with this title is returned.
+   * @param page number of page.
+   * @param title filter for films title.
+   * @return array of films at 0 index and count at index 1
    */
   async findAll(page: number, title?: string): Promise<[Film[], number]> {
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
@@ -52,8 +62,9 @@ export class FilmsService implements UniqueNameChecker {
 
   /**
    * Searches films by id and return result.
-   * @param id film id.
-   * @return found film or null.
+   * @param id Film's id.
+   * @throws NotFoundException If film with current id not found.
+   * @return Found film.
    */
   async findOne(id: number): Promise<Film> {
     const res: Film = await this.repository.findOne({
@@ -61,85 +72,94 @@ export class FilmsService implements UniqueNameChecker {
       relations: this.relations,
     });
     if (!res) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Film with id ${id} not found`);
     }
     return res;
   }
 
   /**
-   * Removes films by id.
-   * @param id film id.
+   * Removes Films by id.
+   * @param id Film id.
+   * @throws NotFoundException If film with current id not found.
    */
   async remove(id: number): Promise<void> {
+    await this.findOne(id);
     await this.repository.delete(id);
   }
 
   /**
-   * Creates new films.
-   * @param f new film.
+   * Creates new film.
+   * @param film New film.
    * @param images images for film.
+   * @throws BadGatewayException If something went wrong with db
    * @return Created film.
    */
   async create(
-    f: CreateFilmDTO,
+    film: CreateFilmDTO,
     images?: Array<Express.Multer.File>,
   ): Promise<Film> {
-    const filmEntity: Film = plainToClass(Film, f);
+    const filmEntity: Film = plainToClass(Film, film);
     let fImages: Image[] = [];
 
     if (images) {
-      fImages = await this.commonService.saveAll(images);
+      fImages = await this.commonService.saveImages(images);
     }
     filmEntity.images = fImages;
-    return await this.repository.save(filmEntity);
+    try {
+      return await this.repository.save(filmEntity);
+    }
+    catch (error) {
+      throw new BadGatewayException();
+    }
+
   }
 
   /**
    * Updates film, by changing exists on current.
-   * @param id film id.
-   * @param f new film.
-   * @param images
+   * @param id Film id.
+   * @param film New film.
+   * @param images new Images for film.
    * @return Updated film.
    */
   async update(
     id: number,
-    f: UpdateFilmDTO,
+    film: UpdateFilmDto,
     images?: Array<Express.Multer.File>,
   ): Promise<Film> {
     const existingFilm: Film = await this.repository.findOneBy({ id });
-    Object.assign(existingFilm, f);
+    Object.assign(existingFilm, film);
     if (images) {
-      existingFilm.images = await this.commonService.saveAll(images);
+      existingFilm.images = await this.commonService.saveImages(images);
     }
 
-    if (f.characters) {
+    if (film.characters) {
       existingFilm.characters = await this.commonService.getPeople([
-        ...new Set<number>(f.characters),
+        ...new Set<number>(film.characters),
       ]);
     }
 
-    if (f.planets) {
+    if (film.planets) {
       existingFilm.planets = await this.commonService.getPlanets([
-        ...new Set<number>(f.planets),
+        ...new Set<number>(film.planets),
       ]);
     }
 
-    if (f.species) {
+    if (film.species) {
       existingFilm.species = await this.commonService.getSpecies([
-        ...new Set<number>(f.species),
+        ...new Set<number>(film.species),
       ]);
     }
-    if (f.vehicles) {
+    if (film.vehicles) {
       existingFilm.vehicles = await this.commonService.getVehicles([
-        ...new Set<number>(f.vehicles),
+        ...new Set<number>(film.vehicles),
       ]);
     }
-    if (f.starships) {
+    if (film.starships) {
       existingFilm.starships = await this.commonService.getStarships([
-        ...new Set<number>(f.starships),
+        ...new Set<number>(film.starships),
       ]);
     }
-    console.log(existingFilm);
+
     await this.repository.save(existingFilm, { reload: true });
     return this.findOne(id);
   }

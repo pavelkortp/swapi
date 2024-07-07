@@ -5,12 +5,15 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Validate,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UniqueTitleConstraint } from '../validation/unique-title.constraint';
 
-export class UpdateFilmDTO {
+export class UpdateFilmDto {
   @ApiProperty()
   @IsOptional()
+  @Validate(UniqueTitleConstraint)
   @IsString()
   title?: string;
 
