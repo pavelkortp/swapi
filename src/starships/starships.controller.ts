@@ -51,9 +51,10 @@ export class StarshipsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetStarshipDto> {
-    const s: Starship = await this.service.findOne(id);
-    return new GetStarshipDto(s);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GetStarshipDto> {
+    return new GetStarshipDto(await this.service.findOne(id));
   }
 
   @Get('copy')
