@@ -30,7 +30,7 @@ export class PlanetsService {
 
   /**
    * Returns last 10 planets by the specified page and name, as well as the total
-   * number of planets. If you use the title search, the total number of
+   * number of planets. If you use the name search, the total number of
    * planets with this name is returned.
    * @param page Number of page.
    * @param name Filter for planets name.
