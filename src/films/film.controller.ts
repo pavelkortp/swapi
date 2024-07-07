@@ -13,12 +13,12 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateFilmDTO } from './dto/create-film.dto';
+import { CreateFilmDto } from './dto/create-film.dto';
 import { FilmService } from './film.service';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Page } from '../declarations';
-import { GetFilmDTO } from './dto/get-film.dto';
+import { GetFilmDto } from './dto/get-film.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
@@ -30,17 +30,17 @@ export class FilmController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   async create(
-    @Body(ValidationPipe) f: CreateFilmDTO,
+    @Body(ValidationPipe) f: CreateFilmDto,
     @UploadedFiles(OptionalImagePipe)
-    images?: Array<Express.Multer.File>,
-  ): Promise<GetFilmDTO> {
-    return new GetFilmDTO(await this.service.create(f, images));
+    images?: Express.Multer.File[],
+  ): Promise<GetFilmDto> {
+    return new GetFilmDto(await this.service.create(f, images));
   }
 
   @Get('copy')
-  async copyPeople(): Promise<void> {
+  async copyFilms(): Promise<void> {
     let response: Response = await fetch('https://swapi.py4e.com/api/films');
-    let res: { next: string; results: CreateFilmDTO[] } = await response.json();
+    let res: { next: string; results: CreateFilmDto[] } = await response.json();
     do {
       for (const e of res.results) {
         await this.service.create(e);
@@ -55,18 +55,18 @@ export class FilmController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
-  ): Promise<Page<GetFilmDTO>> {
+  ): Promise<Page<GetFilmDto>> {
     const [films, count] = await this.service.findAll(page, name);
     return {
-      items: films.map((p) => new GetFilmDTO(p)),
+      items: films.map((film) => new GetFilmDto(film)),
       count,
       page,
     };
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetFilmDTO> {
-    return new GetFilmDTO(await this.service.findOne(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetFilmDto> {
+    return new GetFilmDto(await this.service.findOne(id));
   }
 
   @Patch(':id')

@@ -5,12 +5,12 @@ import {
   JoinTable,
   ManyToMany,
 } from 'typeorm';
-import { People } from '../../people/entities/People';
+import { People } from '../../people/entities/people.entity';
 import { Planet } from '../../planets/entities/Planet';
 import { Specie } from '../../species/entities/Specie';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
-import { Image } from '../../images/entities/Image';
+import { Image } from '../../images/entities/image.entity';
 import { CommonEntity } from '../../common/CommonEntity';
 
 @Entity('films')

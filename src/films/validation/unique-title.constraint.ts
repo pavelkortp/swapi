@@ -2,13 +2,13 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { FilmsService } from '../films.service';
+import { FilmService } from '../film.service';
 import { Inject, Injectable } from '@nestjs/common';
 
 @ValidatorConstraint({ name: 'isUniqueTitle', async: true })
 @Injectable()
 export class UniqueTitleConstraint implements ValidatorConstraintInterface {
-  constructor(@Inject(FilmsService) private filmsService: FilmsService) {}
+  constructor(@Inject(FilmService) private filmsService: FilmService) {}
 
   defaultMessage(): string {
     return 'Row with current name already exists';

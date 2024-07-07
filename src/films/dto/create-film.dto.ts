@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { UniqueTitleConstraint } from '../validation/unique-title.constraint';
 
-export class CreateFilmDTO {
+export class CreateFilmDto {
   @ApiProperty()
   @Validate(UniqueTitleConstraint)
   @IsString()
