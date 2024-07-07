@@ -6,7 +6,6 @@ import { FilmController } from './film.controller';
 import { CommonModule } from '../common/common.module';
 import { Film } from './entities/film.entity';
 
-
 @Module({
   imports: [forwardRef(() => CommonModule), TypeOrmModule.forFeature([Film])],
   providers: [UniqueTitleConstraint, FilmService],

@@ -6,8 +6,8 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { People } from '../../people/entities/people.entity';
-import { Planet } from '../../planets/entities/Planet';
-import { Specie } from '../../species/entities/Specie';
+import { Planet } from '../../planets/entities/planet.entity';
+import { Specie } from '../../species/entities/specie.entity';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
 import { Image } from '../../images/entities/image.entity';

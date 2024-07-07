@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsNumber,
-  IsString,
-  Validate,
-} from 'class-validator';
+import { IsDateString, IsNumber, IsString, Validate } from 'class-validator';
 import { UniqueTitleConstraint } from '../validation/unique-title.constraint';
 
 export class CreateFilmDto {
