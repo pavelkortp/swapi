@@ -4,6 +4,7 @@ import { AppModule } from './app.module.js';
 import { useContainer } from 'class-validator';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as process from 'node:process';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,6 +19,6 @@ async function bootstrap() {
   SwaggerModule.setup('documentation', app, document);
   //Don't know how to work, but this line for injecting peopleService into UniqueNameConstraint
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
