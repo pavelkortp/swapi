@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePlanetDTO {
   @ApiProperty()
@@ -46,4 +46,16 @@ export class UpdatePlanetDTO {
   @IsString()
   @IsOptional()
   population?: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  @IsInt({ each: true })
+  films?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  @IsInt({ each: true })
+  residents?: number[];
 }

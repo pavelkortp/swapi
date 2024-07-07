@@ -15,6 +15,8 @@ import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PlanetsService {
+  private readonly relations = ['films', 'images', 'residents'];
+
   constructor(
     @Inject(forwardRef(() => CommonService))
     private commonService: CommonService,
@@ -37,7 +39,7 @@ export class PlanetsService {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: ['films', 'images', 'residents'],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -50,10 +52,10 @@ export class PlanetsService {
   async findOne(id: number): Promise<Planet> {
     const res: Planet | null = await this.repository.findOne({
       where: { id },
-      relations: ['residents', 'films'],
+      relations: this.relations,
     });
     if (!res) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Planet with id ${id} not found`);
     }
     return res;
   }
@@ -88,7 +90,7 @@ export class PlanetsService {
 
   /**
    * Updates planets, by changing exists on current.
-   * @param id people id.
+   * @param id planet id.
    * @param p new planet.
    * @param images
    */
@@ -97,17 +99,26 @@ export class PlanetsService {
     p: UpdatePlanetDTO,
     images: Array<Express.Multer.File>,
   ): Promise<Planet> {
-    const pImages = await this.commonService.saveAll(images);
     const existingPlanet: Planet = await this.findOne(id);
     Object.assign(existingPlanet, p);
-    existingPlanet.images = pImages;
-    return await this.repository.save(existingPlanet, { reload: true });
+    if (images) {
+      existingPlanet.images = await this.commonService.saveAll(images);
+    }
+
+    if (p.residents) {
+      existingPlanet.residents = await this.commonService.getPeople(
+        p.residents,
+      );
+    }
+
+    if (p.films) {
+      existingPlanet.films = await this.commonService.getFilms(p.films);
+    }
+
+    await this.repository.save(existingPlanet, { reload: true });
+    return this.findOne(id);
   }
 
-  /**
-   * Checks if name is not exist in store.
-   * @param name checked value.
-   */
   public async isUniqueName(name: string): Promise<boolean> {
     return !(await this.repository.findOneBy({ name: ILike<string>(name) }));
   }
