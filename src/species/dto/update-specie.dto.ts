@@ -1,54 +1,76 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsInt, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
+import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
-export class UpdateSpeciesDto {
+export class UpdateSpecieDto {
   @ApiProperty()
+  @Validate(UniqueNameConstraint)
   @IsString()
-  name: string;
-
-  @ApiProperty()
-  @IsString()
-  classification: string;
-
-  @ApiProperty()
-  @IsString()
-  designation: string;
-
-  @ApiProperty()
-  @IsString()
-  average_height: string;
+  @IsOptional()
+  name?: string;
 
   @ApiProperty()
   @IsString()
-  skin_colors: string;
+  @IsOptional()
+  classification?: string;
 
   @ApiProperty()
   @IsString()
-  hair_colors: string;
+  @IsOptional()
+  designation?: string;
 
   @ApiProperty()
   @IsString()
-  eye_colors: string;
+  @IsOptional()
+  average_height?: string;
 
   @ApiProperty()
   @IsString()
-  average_lifespan: number;
+  @IsOptional()
+  skin_colors?: string;
 
   @ApiProperty()
   @IsString()
-  homeworld: string;
+  @IsOptional()
+  hair_colors?: string;
 
   @ApiProperty()
   @IsString()
-  language: string;
+  @IsOptional()
+  eye_colors?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  average_lifespan?: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsNumberString()
+  @IsOptional()
+  homeworld?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  language?: string;
 
   @ApiProperty()
   @IsArray()
   @IsInt({ each: true })
-  people: number[];
+  @IsOptional()
+  people?: number[];
 
   @ApiProperty()
   @IsArray()
   @IsInt({ each: true })
-  films: number[];
+  @IsOptional()
+  films?: number[];
 }

@@ -5,18 +5,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Specie } from './entities/Specie';
+import { Specie } from './entities/specie.entity';
 import { ILike, Repository } from 'typeorm';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
-import { Image } from '../images/entities/Image';
-import { UpdateSpeciesDto } from './dto/update-specie.dto';
-import { CreateSpecieDTO } from './dto/create-specie.dto';
+import { UpdateSpecieDto } from './dto/update-specie.dto';
+import { CreateSpecieDto } from './dto/create-specie.dto';
 import { CommonService } from '../common/common.service';
+import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class SpeciesService {
-  private readonly relations =  ['films', 'homeworld', 'people', 'images']
+  private readonly relations = ['films', 'homeworld', 'people', 'images'];
 
   constructor(
     @Inject(forwardRef(() => CommonService))
@@ -71,38 +71,56 @@ export class SpeciesService {
    * @param images
    */
   async create(
-    p: CreateSpecieDTO,
+    p: CreateSpecieDto,
     images?: Array<Express.Multer.File>,
   ): Promise<Specie> {
     const specieEntity: Specie = plainToClass(Specie, p);
-    let pImages = [];
+    let pImages: Image[] = [];
     if (images) {
-      pImages = await this.commonService.saveAll(images);
+      pImages = await this.commonService.saveImages(images);
     }
     specieEntity.images = pImages;
     return await this.repository.save(specieEntity);
   }
 
   /**
-   * Updates people, by changing exists on current.
-   * @param id people id.
-   * @param p new people.
-   * @param images
+   * Updates Specie, by changing exists on current.
+   * @param id Specie's id.
+   * @param specie Updated Specie.
+   * @param images new Images for Specie.
+   * @return Updated Specie.
    */
   async update(
     id: number,
-    p: UpdateSpeciesDto,
-    images?: Array<Express.Multer.File>,
+    specie: UpdateSpecieDto,
+    images?: Express.Multer.File[],
   ): Promise<Specie> {
-    let pImages: Image[];
-    if (images) {
-      pImages = await this.commonService.saveAll(images);
-    }
     const existingSpecie: Specie = await this.repository.findOneBy({ id });
-    Object.assign(existingSpecie, p);
-    existingSpecie.images = pImages;
+    Object.assign(existingSpecie, specie);
+    if (images) {
+      existingSpecie.images = await this.commonService.saveImages(images);
+    }
+
+    if (specie.films) {
+      existingSpecie.films = await this.commonService.getFilms([
+        ...new Set<number>(specie.films),
+      ]);
+    }
+
+    if (specie.homeworld) {
+      existingSpecie.homeworld = (
+        await this.commonService.getPlanets([parseInt(specie.homeworld)])
+      )[0];
+    }
+
+    if (specie.people) {
+      existingSpecie.people = await this.commonService.getPeople([
+        ...new Set<number>(specie.people),
+      ]);
+    }
+
     await this.repository.save(existingSpecie, { reload: true });
-    return existingSpecie;
+    return this.findOne(id);
   }
 
   public async isUniqueName(name: string): Promise<boolean> {

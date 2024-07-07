@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Specie } from './entities/Specie';
+import { Specie } from './entities/specie.entity';
 import { SpeciesService } from './species.service';
 import { SpeciesController } from './species.controller';
 import { UniqueNameConstraint } from './validation/unique-name.constraint';

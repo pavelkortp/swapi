@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CommonEntity } from './CommonEntity';
 import { BASE_URL } from '../app.service';
 
-export abstract class PresentDTO {
+export abstract class PresentDto {
   @ApiProperty()
   created: Date;
 

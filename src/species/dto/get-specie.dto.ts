@@ -1,8 +1,8 @@
-import { PresentDTO } from '../../common/present.dto';
+import { PresentDto } from '../../common/present.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Specie } from '../entities/Specie';
+import { Specie } from '../entities/specie.entity';
 
-export class GetSpeciesDto extends PresentDTO {
+export class GetSpecieDto extends PresentDto {
   @ApiProperty()
   name: string;
 

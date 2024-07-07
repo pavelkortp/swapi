@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { Film } from '../../films/entities/film.entity';
-import { Planet } from '../../planets/entities/Planet';
-import { Specie } from '../../species/entities/Specie';
+import { Planet } from '../../planets/entities/planet.entity';
+import { Specie } from '../../species/entities/specie.entity';
 import { Starship } from '../../starships/entities/Starship';
 import { Vehicle } from '../../vehicles/entities/Vehicle';
 import { Image } from '../../images/entities/image.entity';
