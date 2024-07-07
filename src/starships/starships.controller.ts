@@ -53,10 +53,25 @@ export class StarshipsController {
     };
   }
 
-  @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetStarshipDTO> {
-    const s: Starship = await this.service.findOne(id);
-    return new GetStarshipDTO(s);
+  // @Get(':id')
+  // async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetStarshipDTO> {
+  //   const s: Starship = await this.service.findOne(id);
+  //   return new GetStarshipDTO(s);
+  // }
+
+  @Get('copy')
+  async copyPeople(): Promise<void> {
+    let response: Response = await fetch('https://swapi.dev/api/starships');
+    let res: { next: string; results: CreateStarshipDTO[] } =
+      await response.json();
+    do {
+      for (const e of res.results) {
+        await this.service.create(e);
+      }
+
+      response = await fetch(res.next);
+      res = await response.json();
+    } while (res.next);
   }
 
   @Patch(':id')

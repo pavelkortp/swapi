@@ -1,15 +1,17 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UniqueTitleConstraint } from './validation/unique-title.constraint';
 import { FilmsService } from './films.service';
 import { FilmsController } from './films.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonService } from '../common/common.service';
+import { CommonModule } from '../common/common.module';
 import { Film } from './entities/Film';
-import { ImageService } from '../images/image.service';
-import { Image } from '../images/entities/Image';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Film, Image])],
-  providers: [UniqueTitleConstraint, FilmsService, ImageService],
+  imports: [forwardRef(() => CommonModule), TypeOrmModule.forFeature([Film])],
+  providers: [UniqueTitleConstraint, FilmsService],
   controllers: [FilmsController],
+  exports: [FilmsService],
 })
 export class FilmsModule {}

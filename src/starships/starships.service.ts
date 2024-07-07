@@ -12,16 +12,18 @@ import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
 import { Image } from '../images/entities/Image';
 import { CreateStarshipDTO } from './dto/create-starship.dto';
-import { ImageService } from '../images/image.service';
 import { UpdateStarshipDTO } from './dto/update-starship.dto';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class StarshipsService implements UniqueNameChecker {
+  private readonly relations = ['films', 'pilots', 'images'];
+
   constructor(
     @InjectRepository(Starship)
     private repository: Repository<Starship>,
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
   ) {}
 
   /**
@@ -36,7 +38,7 @@ export class StarshipsService implements UniqueNameChecker {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: ['films', 'pilots', 'images'],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -49,7 +51,7 @@ export class StarshipsService implements UniqueNameChecker {
   async findOne(id: number): Promise<Starship> {
     const res: Starship | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'pilots', 'images'],
+      relations: this.relations,
     });
     if (!res) {
       throw new NotFoundException();
@@ -78,7 +80,7 @@ export class StarshipsService implements UniqueNameChecker {
     let pImages = [];
 
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
 
     starship.images = pImages;
@@ -98,7 +100,7 @@ export class StarshipsService implements UniqueNameChecker {
   ): Promise<Starship> {
     let pImages: Image[];
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
     const existingStarship: Starship = await this.repository.findOneBy({ id });
     Object.assign(existingStarship, p);

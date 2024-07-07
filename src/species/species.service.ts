@@ -7,24 +7,20 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Specie } from './entities/Specie';
 import { ILike, Repository } from 'typeorm';
-import { People } from '../people/entities/People';
 import { ITEMS_PER_PAGE } from '../app.service';
-import { CreatePeopleDTO } from '../people/dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
 import { Image } from '../images/entities/Image';
 import { UpdateSpeciesDto } from './dto/update-specie.dto';
-import { ImageService } from '../images/image.service';
 import { CreateSpecieDTO } from './dto/create-specie.dto';
-import { Planet } from '../planets/entities/Planet';
-import { PlanetsService } from '../planets/planets.service';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class SpeciesService {
+  private readonly relations =  ['films', 'homeworld', 'people', 'images']
+
   constructor(
-    @Inject(forwardRef(() => PlanetsService))
-    private planetsService: PlanetsService,
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
     @InjectRepository(Specie) private repository: Repository<Specie>,
   ) {}
 
@@ -40,7 +36,7 @@ export class SpeciesService {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: ['films', 'homeworld', 'people', 'images'],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -53,7 +49,7 @@ export class SpeciesService {
   async findOne(id: number): Promise<Specie> {
     const res: Specie | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'homeworld', 'people', 'images'],
+      relations: this.relations,
     });
     if (!res) {
       throw new NotFoundException();
@@ -80,19 +76,10 @@ export class SpeciesService {
   ): Promise<Specie> {
     const specieEntity: Specie = plainToClass(Specie, p);
     let pImages = [];
-    const id = parseInt(p.homeworld);
-    console.log(p.homeworld);
-
-    let planet = null;
-    if (id) {
-      planet = await this.planetsService.findOne(id);
-    }
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
-
     specieEntity.images = pImages;
-    specieEntity.homeworld = planet;
     return await this.repository.save(specieEntity);
   }
 
@@ -109,7 +96,7 @@ export class SpeciesService {
   ): Promise<Specie> {
     let pImages: Image[];
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
     const existingSpecie: Specie = await this.repository.findOneBy({ id });
     Object.assign(existingSpecie, p);

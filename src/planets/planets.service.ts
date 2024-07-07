@@ -10,15 +10,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { UpdatePlanetDTO } from './dto/update-planet.dto';
 import { CreatePlanetDTO } from './dto/create-planet.dto';
-
 import { ITEMS_PER_PAGE } from '../app.service';
-import { ImageService } from '../images/image.service';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PlanetsService {
   constructor(
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
     @InjectRepository(Planet)
     private repository: Repository<Planet>,
   ) {}
@@ -80,7 +79,7 @@ export class PlanetsService {
     let pImages = [];
 
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
 
     planet.images = pImages;
@@ -98,7 +97,7 @@ export class PlanetsService {
     p: UpdatePlanetDTO,
     images: Array<Express.Multer.File>,
   ): Promise<Planet> {
-    const pImages = await this.imageService.saveAll(images);
+    const pImages = await this.commonService.saveAll(images);
     const existingPlanet: Planet = await this.findOne(id);
     Object.assign(existingPlanet, p);
     existingPlanet.images = pImages;

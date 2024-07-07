@@ -6,21 +6,23 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { ImageService } from '../images/image.service';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
 import { Image } from '../images/entities/Image';
 import { Vehicle } from './entities/Vehicle';
 import { CreateVehicleDTO } from './dto/create-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class VehicleService {
+  private readonly relations = ['films', 'pilots', 'images'];
+
   constructor(
     @InjectRepository(Vehicle)
     private repository: Repository<Vehicle>,
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
+    @Inject(forwardRef(() => CommonService))
+    private commonService: CommonService,
   ) {}
 
   /**
@@ -35,7 +37,7 @@ export class VehicleService {
       },
       skip,
       take: ITEMS_PER_PAGE,
-      relations: ['films', 'pilots', 'images'],
+      relations: this.relations,
     });
     return [items, count];
   }
@@ -48,7 +50,7 @@ export class VehicleService {
   async findOne(id: number): Promise<Vehicle> {
     const res: Vehicle | null = await this.repository.findOne({
       where: { id },
-      relations: ['films', 'pilots', 'images'],
+      relations: this.relations,
     });
     if (!res) {
       throw new NotFoundException();
@@ -77,7 +79,7 @@ export class VehicleService {
     let pImages = [];
 
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
 
     starship.images = pImages;
@@ -97,7 +99,7 @@ export class VehicleService {
   ): Promise<Vehicle> {
     let pImages: Image[];
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
     const vehicle: Vehicle = await this.repository.findOneBy({ id });
     Object.assign(vehicle, p);

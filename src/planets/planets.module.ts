@@ -1,29 +1,23 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Planet } from './entities/Planet';
 import { PlanetsController } from './planets.controller';
 import { PlanetsService } from './planets.service';
 import { UniqueNameConstraint } from './validation/unique-name.constraint';
-import { Image } from '../images/entities/Image';
-import { ImageModule } from '../images/image.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { MulterConfigService } from '../middlewares/multer-config.service';
-import { ImageService } from '../images/image.service';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  controllers: [PlanetsController],
   imports: [
-    TypeOrmModule.forFeature([Planet, Image]),
-    ImageModule,
+    TypeOrmModule.forFeature([Planet]),
+    forwardRef(() => CommonModule),
     MulterModule.registerAsync({
       useClass: MulterConfigService,
     }),
   ],
-  providers: [
-    PlanetsService,
-    UniqueNameConstraint,
-    MulterConfigService,
-    ImageService,
-  ],
+  controllers: [PlanetsController],
+  providers: [PlanetsService, UniqueNameConstraint, MulterConfigService],
+  exports: [PlanetsService, TypeOrmModule.forFeature([Planet])],
 })
 export class PlanetsModule {}

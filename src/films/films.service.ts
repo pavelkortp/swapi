@@ -12,7 +12,6 @@ import { CreateFilmDTO } from './dto/create-film.dto';
 import { UpdateFilmDTO } from './dto/update-film.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
-import { ImageService } from '../images/image.service';
 import { CommonService } from '../common/common.service';
 import { Image } from '../images/entities/Image';
 
@@ -28,8 +27,6 @@ export class FilmsService implements UniqueNameChecker {
   ];
 
   constructor(
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
     @InjectRepository(Film)
     private repository: Repository<Film>,
     @Inject(forwardRef(() => CommonService))
@@ -91,7 +88,7 @@ export class FilmsService implements UniqueNameChecker {
     let fImages: Image[] = [];
 
     if (images) {
-      fImages = await this.imageService.saveAll(images);
+      fImages = await this.commonService.saveAll(images);
     }
     filmEntity.images = fImages;
     return await this.repository.save(filmEntity);
@@ -112,7 +109,7 @@ export class FilmsService implements UniqueNameChecker {
     const existingFilm: Film = await this.repository.findOneBy({ id });
     Object.assign(existingFilm, f);
     if (images) {
-      existingFilm.images = await this.imageService.saveAll(images);
+      existingFilm.images = await this.commonService.saveAll(images);
     }
 
     if (f.characters) {

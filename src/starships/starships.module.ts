@@ -1,16 +1,18 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { StarshipsController } from './starships.controller';
 import { StarshipsService } from './starships.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Planet } from '../planets/entities/Planet';
 import { Starship } from './entities/Starship';
 import { UniqueNameConstraint } from './validation/unique-name.constraint';
-import { Image } from '../images/entities/Image';
-import { ImageService } from '../images/image.service';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Starship, Planet, Image])],
-  providers: [StarshipsService, UniqueNameConstraint, ImageService],
+  imports: [
+    TypeOrmModule.forFeature([Starship]),
+    forwardRef(() => CommonModule),
+  ],
+  providers: [StarshipsService, UniqueNameConstraint],
   controllers: [StarshipsController],
+  exports: [StarshipsService, TypeOrmModule.forFeature([Starship])],
 })
 export class StarshipsModule {}

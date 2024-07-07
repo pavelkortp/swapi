@@ -27,8 +27,6 @@ export class PeopleService implements UniqueNameChecker {
   ];
 
   constructor(
-    @Inject(forwardRef(() => ImageService))
-    private imageService: ImageService,
     @Inject(forwardRef(() => CommonService))
     private commonService: CommonService,
     @InjectRepository(People)
@@ -89,7 +87,7 @@ export class PeopleService implements UniqueNameChecker {
     let pImages = [];
 
     if (images) {
-      pImages = await this.imageService.saveAll(images);
+      pImages = await this.commonService.saveAll(images);
     }
 
     peopleEntity.images = pImages;
@@ -110,7 +108,7 @@ export class PeopleService implements UniqueNameChecker {
     const existingPeople: People = await this.repository.findOneBy({ id });
     Object.assign(existingPeople, p);
     if (images) {
-      existingPeople.images = await this.imageService.saveAll(images);
+      existingPeople.images = await this.commonService.saveAll(images);
     }
 
     if (p.homeworld) {

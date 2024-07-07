@@ -58,7 +58,8 @@ export class PeopleController {
       await response.json();
     do {
       for (const e of res.results) {
-        e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
+        // e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
+        e.homeworld = null;
         await this.service.create(e);
       }
 
