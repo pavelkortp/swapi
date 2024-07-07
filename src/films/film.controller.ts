@@ -31,8 +31,7 @@ export class FilmController {
   @UseInterceptors(FilesInterceptor('images'))
   async create(
     @Body(ValidationPipe) f: CreateFilmDto,
-    @UploadedFiles(OptionalImagePipe)
-    images?: Express.Multer.File[],
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
   ): Promise<GetFilmDto> {
     return new GetFilmDto(await this.service.create(f, images));
   }
@@ -70,11 +69,13 @@ export class FilmController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images'))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) f: UpdateFilmDto,
-  ): Promise<void> {
-    await this.service.update(id, f);
+    @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
+  ): Promise<GetFilmDto> {
+    return new GetFilmDto(await this.service.update(id, f, images));
   }
 
   @Delete(':id')
