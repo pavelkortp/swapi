@@ -1,4 +1,6 @@
 import {
+  IsArray,
+  IsInt,
   IsNumberString,
   IsOptional,
   IsString,
@@ -46,8 +48,26 @@ export class CreatePeopleDto {
   @IsString()
   skin_color: string;
 
-  films = [];
-  species = [];
-  vehicles = [];
-  starships = [];
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  films?: number[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt({ each: true })
+  @IsArray()
+  species?: number[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt({ each: true })
+  @IsArray()
+  vehicles?: number[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt({ each: true })
+  @IsArray()
+  starships?: number[];
 }
