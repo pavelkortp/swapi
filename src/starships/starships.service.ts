@@ -97,7 +97,7 @@ export class StarshipsService implements UniqueNameChecker {
     }
 
     starshipEntity.images = pImages;
-    return await this.repository.save(starship);
+    return await this.repository.save(starshipEntity);
   }
 
   /**
