@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Validate } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
 export class CreateVehicleDto {
@@ -48,9 +54,15 @@ export class CreateVehicleDto {
   @IsString()
   vehicle_class: string;
 
-  pilots = [];
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  pilots?: number[];
 
-  films = [];
-
-  images = [];
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  films?: number[];
 }

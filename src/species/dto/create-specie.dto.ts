@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Validate } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
 export class CreateSpecieDto {
@@ -43,4 +49,16 @@ export class CreateSpecieDto {
   @ApiProperty()
   @IsString()
   language: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  people?: number[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  films?: number[];
 }

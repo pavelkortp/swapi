@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsInt, IsOptional, IsString, Validate } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 
 export class CreatePlanetDto {
