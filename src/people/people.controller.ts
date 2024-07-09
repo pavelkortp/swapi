@@ -13,23 +13,24 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { PeopleService } from './people.service';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { UpdatePeopleDto } from './dto/update-people.dto';
-import { ApiTags } from '@nestjs/swagger';
 import { GetPeopleDto } from './dto/get-people.dto';
 import { People } from './entities/people.entity';
 import { Page } from '../declarations';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
-@ApiTags(`people`)
+@ApiTags(`People`)
 @Controller('people')
 export class PeopleController {
   constructor(private service: PeopleService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetPeopleDto })
   async create(
     @Body(ValidationPipe) p: CreatePeopleDto,
     @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
@@ -68,6 +69,7 @@ export class PeopleController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: GetPeopleDto })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetPeopleDto> {
     const p: People = await this.service.findOne(id);
     return new GetPeopleDto(p);
@@ -75,6 +77,7 @@ export class PeopleController {
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetPeopleDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdatePeopleDto,

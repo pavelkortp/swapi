@@ -7,7 +7,7 @@ import {
   Validate,
 } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePeopleDto {
   @ApiProperty()
@@ -35,7 +35,7 @@ export class CreatePeopleDto {
   @IsNumberString()
   height: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumberString()
   @IsOptional()
   homeworld: string | null;
@@ -48,24 +48,24 @@ export class CreatePeopleDto {
   @IsString()
   skin_color: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsArray()
   films?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsInt({ each: true })
   @IsArray()
   species?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsInt({ each: true })
   @IsArray()
   vehicles?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsInt({ each: true })
   @IsArray()
