@@ -9,6 +9,7 @@ import {
   Validate,
 } from 'class-validator';
 import { UniqueTitleConstraint } from '../validation/unique-title.constraint';
+import { IsStringNumber } from '../../validators/IsStringNumberConstraint';
 
 export class CreateFilmDto {
   @ApiProperty()
@@ -38,31 +39,31 @@ export class CreateFilmDto {
 
   @ApiProperty()
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   characters?: number[] = [];
 
   @ApiProperty()
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   planets?: number[];
 
   @ApiProperty()
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   starships?: number[];
 
   @ApiProperty()
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   vehicles?: number[];
 
   @ApiProperty()
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   species?: number[];
 }
