@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -47,11 +46,9 @@ export class Specie extends CommonEntity {
   language: string;
 
   @ManyToMany(() => People, (p: People) => p.species)
-  @JoinTable({ name: 'species_people' })
   people: People[];
 
   @ManyToMany(() => Film, (f: Film) => f.species)
-  @JoinTable({ name: 'species_films' })
   films: Film[];
 
   @ManyToMany(() => Image, () => Image)

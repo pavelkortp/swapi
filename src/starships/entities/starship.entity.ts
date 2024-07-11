@@ -46,11 +46,9 @@ export class Starship extends CommonEntity {
   starship_class: string;
 
   @ManyToMany(() => People, (p: People) => p.starships)
-  @JoinTable({ name: 'starships_people' })
   pilots: People[];
 
   @ManyToMany(() => Film, (f: Film) => f.starships)
-  @JoinTable({ name: 'starships_films' })
   films: Film[];
 
   @ManyToMany(() => Image, () => Image)

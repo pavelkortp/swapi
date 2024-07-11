@@ -37,10 +37,9 @@ export class Planet extends CommonEntity {
   images: Image[];
 
   @OneToMany(() => People, (p: People) => p.homeworld)
-  @JoinTable({ name: 'planets_people' })
+  @JoinTable()
   residents: People[];
 
   @ManyToMany(() => Film, (f: Film) => f.characters)
-  @JoinTable({ name: 'planets_films' })
   films: Film[];
 }

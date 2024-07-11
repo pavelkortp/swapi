@@ -34,19 +34,18 @@ export class People extends CommonEntity {
   skin_color: string;
 
   @ManyToOne(() => Planet, (p: Planet) => p.residents)
-  @JoinTable({ name: 'planets' })
+  @JoinTable()
   homeworld: Planet | null;
 
   @ManyToMany(() => Film, (f: Film) => f.characters)
-  @JoinTable({ name: 'people_films' })
   films: Film[];
 
   @ManyToMany(() => Specie, (s: Specie) => s.people)
-  @JoinTable({ name: 'species_people' })
+  @JoinTable({ name: 'people_species' })
   species: Specie[];
 
   @ManyToMany(() => Vehicle, (v: Vehicle) => v.pilots)
-  @JoinTable({ name: 'vehicles_people' })
+  @JoinTable({ name: 'people_vehicles' })
   vehicles: Vehicle[];
 
   @ManyToMany(() => Image)
@@ -54,6 +53,6 @@ export class People extends CommonEntity {
   images: Image[];
 
   @ManyToMany(() => Starship, (s: Starship) => s.pilots)
-  @JoinTable({ name: 'starships_people' })
+  @JoinTable({ name: 'people_starships' })
   starships: Starship[];
 }

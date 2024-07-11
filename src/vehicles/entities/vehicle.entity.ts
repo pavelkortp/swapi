@@ -40,11 +40,9 @@ export class Vehicle extends CommonEntity {
   vehicle_class: string;
 
   @ManyToMany(() => People, (p: People) => p.vehicles)
-  @JoinTable({ name: 'vehicles_people' })
   pilots: People[];
 
   @ManyToMany(() => Film, (f: Film) => f.vehicles)
-  @JoinTable({ name: 'vehicles_films' })
   films: Film[];
 
   @ManyToMany(() => Image, () => Image)
