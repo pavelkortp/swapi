@@ -15,7 +15,8 @@ export class MulterConfigService implements MulterOptionsFactory {
         destination: './uploads',
         filename: (req, file, cb) => {
           const uniqueSuffix = uuidv4();
-          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+          const newName = `${uniqueSuffix}${extname(file.originalname)}`;
+          cb(null, newName);
         },
       }),
     };
