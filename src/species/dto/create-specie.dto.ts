@@ -1,12 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsInt,
+  IsNumberString,
   IsOptional,
   IsString,
   Validate,
 } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
+import { IsStringNumber } from '../../validators/IsStringNumberConstraint';
 
 export class CreateSpecieDto {
   @ApiProperty()
@@ -43,22 +44,23 @@ export class CreateSpecieDto {
   average_lifespan: string;
 
   @ApiProperty()
-  @IsString()
-  homeworld: string;
+  @IsNumberString()
+  @IsOptional()
+  homeworld: string | null;
 
   @ApiProperty()
   @IsString()
   language: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   people?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsArray()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsOptional()
   films?: number[];
 }

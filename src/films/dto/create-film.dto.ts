@@ -1,9 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsDateString,
-  IsInt,
-  IsNumber,
   IsOptional,
   IsString,
   Validate,
@@ -18,7 +16,7 @@ export class CreateFilmDto {
   title: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsStringNumber()
   episode_id: number;
 
   @ApiProperty()
@@ -34,34 +32,34 @@ export class CreateFilmDto {
   producer: string;
 
   @ApiProperty()
-  @IsDateString()
+  @IsDateString({ strict: false })
   release_date: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()
   characters?: number[] = [];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()
   planets?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()
   starships?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()
   vehicles?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()

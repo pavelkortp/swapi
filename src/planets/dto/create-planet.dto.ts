@@ -1,12 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsInt,
-  IsOptional,
-  IsString,
-  Validate,
-} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsOptional, IsString, Validate } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
+import { IsStringNumber } from '../../validators/IsStringNumberConstraint';
 
 export class CreatePlanetDto {
   @ApiProperty()
@@ -46,15 +41,15 @@ export class CreatePlanetDto {
   @IsString()
   population: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsArray()
   @IsOptional()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   films?: number[];
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsArray()
   @IsOptional()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   residents?: number[];
 }

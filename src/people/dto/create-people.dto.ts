@@ -1,6 +1,5 @@
 import {
   IsArray,
-  IsInt,
   IsNumberString,
   IsOptional,
   IsString,
@@ -8,6 +7,7 @@ import {
 } from 'class-validator';
 import { UniqueNameConstraint } from '../validation/unique-name.constraint';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsStringNumber } from '../../validators/IsStringNumberConstraint';
 
 export class CreatePeopleDto {
   @ApiProperty()
@@ -35,7 +35,7 @@ export class CreatePeopleDto {
   @IsNumberString()
   height: string;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
   @IsNumberString()
   @IsOptional()
   homeworld: string | null;
@@ -48,26 +48,27 @@ export class CreatePeopleDto {
   @IsString()
   skin_color: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsOptional()
+  @IsStringNumber({ each: true })
   @IsArray()
   films?: number[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsOptional()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsArray()
   species?: number[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsOptional()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsArray()
   vehicles?: number[];
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: ['1', '2', '3'] })
   @IsOptional()
-  @IsInt({ each: true })
+  @IsStringNumber({ each: true })
   @IsArray()
   starships?: number[];
 }
