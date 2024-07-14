@@ -34,25 +34,24 @@ export class People extends CommonEntity {
   skin_color: string;
 
   @ManyToOne(() => Planet, (p: Planet) => p.residents)
-  @JoinTable()
   homeworld: Planet | null;
 
   @ManyToMany(() => Film, (f: Film) => f.characters)
   films: Film[];
 
   @ManyToMany(() => Specie, (s: Specie) => s.people)
-  @JoinTable({ name: 'people_species' })
+  @JoinTable()
   species: Specie[];
 
   @ManyToMany(() => Vehicle, (v: Vehicle) => v.pilots)
-  @JoinTable({ name: 'people_vehicles' })
+  @JoinTable()
   vehicles: Vehicle[];
 
-  @ManyToMany(() => Image)
-  @JoinTable({ name: 'people_images' })
-  images: Image[];
-
   @ManyToMany(() => Starship, (s: Starship) => s.pilots)
-  @JoinTable({ name: 'people_starships' })
+  @JoinTable()
   starships: Starship[];
+
+  @ManyToMany(() => Image)
+  @JoinTable()
+  images: Image[];
 }

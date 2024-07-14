@@ -34,26 +34,26 @@ export class Film extends CommonEntity {
   release_date: Date;
 
   @ManyToMany(() => People, (p: People) => p.films)
-  @JoinTable({ name: 'films_people' })
+  @JoinTable()
   characters: People[];
 
   @ManyToMany(() => Planet, (p: Planet) => p.films)
-  @JoinTable({ name: 'films_planets' })
+  @JoinTable()
   planets: Planet[];
 
   @ManyToMany(() => Starship, (s: Starship) => s.films)
-  @JoinTable({ name: 'films_starships' })
+  @JoinTable()
   starships: Starship[];
 
   @ManyToMany(() => Vehicle, (v: Vehicle) => v.films)
-  @JoinTable({ name: 'films_vehicles' })
+  @JoinTable()
   vehicles: Vehicle[];
 
   @ManyToMany(() => Specie, (s: Specie) => s.films)
-  @JoinTable({ name: 'films_species' })
+  @JoinTable()
   species: Specie[];
 
-  @ManyToMany(() => Image, () => Image)
-  @JoinTable({ name: 'films_images' })
+  @ManyToMany(() => Image)
+  @JoinTable()
   images: Image[];
 }

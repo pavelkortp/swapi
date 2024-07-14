@@ -11,6 +11,7 @@ export class Planet extends CommonEntity {
 
   @Column()
   rotation_period: string;
+
   @Column()
   orbital_period: string;
 
@@ -32,14 +33,13 @@ export class Planet extends CommonEntity {
   @Column()
   population: string;
 
-  @ManyToMany(() => Image)
-  @JoinTable({ name: 'planets_images' })
-  images: Image[];
-
   @OneToMany(() => People, (p: People) => p.homeworld)
-  @JoinTable()
   residents: People[];
 
-  @ManyToMany(() => Film, (f: Film) => f.characters)
+  @ManyToMany(() => Film, (f: Film) => f.planets)
   films: Film[];
+
+  @ManyToMany(() => Image)
+  @JoinTable()
+  images: Image[];
 }

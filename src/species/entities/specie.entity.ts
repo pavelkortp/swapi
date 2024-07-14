@@ -39,7 +39,6 @@ export class Specie extends CommonEntity {
   average_lifespan: string;
 
   @ManyToOne(() => Planet, { nullable: true })
-  @JoinColumn({ name: 'homeworldId' })
   homeworld: Planet | null;
 
   @Column()
@@ -52,6 +51,6 @@ export class Specie extends CommonEntity {
   films: Film[];
 
   @ManyToMany(() => Image, () => Image)
-  @JoinTable({ name: 'species_images' })
+  @JoinTable()
   images: Image[];
 }
