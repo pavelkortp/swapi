@@ -13,7 +13,6 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DATABASE,
   entities: ['dist/**/entities/*.js'],
   migrations: ['dist/database/migrations/*.js'],
-  synchronize: true,
 };
 
 const dataSource = new DataSource(dataSourceOptions);
