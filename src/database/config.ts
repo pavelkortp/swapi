@@ -16,5 +16,4 @@ export const dataSourceOptions: DataSourceOptions = {
 };
 
 const dataSource = new DataSource(dataSourceOptions);
-console.log('DataSourceOptions:', dataSourceOptions);
 export default dataSource;

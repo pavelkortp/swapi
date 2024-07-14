@@ -12,7 +12,6 @@ import { plainToClass } from 'class-transformer';
 import { UpdateSpecieDto } from './dto/update-specie.dto';
 import { CreateSpecieDto } from './dto/create-specie.dto';
 import { CommonService } from '../common/common.service';
-import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class SpeciesService {
@@ -75,12 +74,8 @@ export class SpeciesService {
     images?: Array<Express.Multer.File>,
   ): Promise<Specie> {
     const specieEntity: Specie = plainToClass(Specie, p);
-    let pImages: Image[] = [];
-    if (images) {
-      pImages = await this.commonService.saveImages(images);
-    }
-    specieEntity.images = pImages;
-    return await this.repository.save(specieEntity);
+    const savedSpecie = await this.repository.save(specieEntity);
+    return this.update(savedSpecie.id, p, images);
   }
 
   /**
@@ -95,7 +90,7 @@ export class SpeciesService {
     specie: UpdateSpecieDto,
     images?: Express.Multer.File[],
   ): Promise<Specie> {
-    const existingSpecie: Specie = await this.repository.findOneBy({ id });
+    const existingSpecie: Specie = await this.findOne(id);
     Object.assign(existingSpecie, specie);
     if (images) {
       existingSpecie.images = await this.commonService.saveImages(images);

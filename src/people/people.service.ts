@@ -96,12 +96,8 @@ export class PeopleService implements UniqueNameChecker {
     images?: Express.Multer.File[],
   ): Promise<People> {
     const peopleEntity: People = plainToClass(People, people);
-
-    if (images) {
-      peopleEntity.images = await this.commonService.saveImages(images);
-    }
     const savedPeople: People = await this.repository.save(peopleEntity);
-    return await this.update(savedPeople.id, people);
+    return await this.update(savedPeople.id, people, images);
   }
 
   /**
@@ -116,7 +112,7 @@ export class PeopleService implements UniqueNameChecker {
     people: UpdatePeopleDto,
     images?: Array<Express.Multer.File>,
   ): Promise<People> {
-    const existingPeople: People = await this.repository.findOneBy({ id });
+    const existingPeople: People = await this.findOne(id);
     Object.assign(existingPeople, people);
     if (images) {
       existingPeople.images = await this.commonService.saveImages(images);

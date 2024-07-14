@@ -89,13 +89,8 @@ export class PlanetsService {
     images?: Express.Multer.File[],
   ): Promise<Planet> {
     const planetEntity: Planet = plainToClass(Planet, planet);
-
-    if (images) {
-      planetEntity.images = await this.commonService.saveImages(images);
-    }
     const savedPlanet = await this.repository.save(planetEntity);
-
-    return this.update(savedPlanet.id, planet);
+    return this.update(savedPlanet.id, planet, images);
   }
 
   /**

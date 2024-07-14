@@ -10,7 +10,6 @@ import { Starship } from './entities/starship.entity';
 import { ILike, Repository } from 'typeorm';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
-import { Image } from '../images/entities/image.entity';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { UpdateStarshipDto } from './dto/update-starship.dto';
 import { CommonService } from '../common/common.service';
@@ -90,14 +89,8 @@ export class StarshipsService implements UniqueNameChecker {
     images?: Express.Multer.File[],
   ): Promise<Starship> {
     const starshipEntity: Starship = plainToClass(Starship, starship);
-    let pImages: Image[] = [];
-
-    if (images) {
-      pImages = await this.commonService.saveImages(images);
-    }
-
-    starshipEntity.images = pImages;
-    return await this.repository.save(starshipEntity);
+    const savedStarship = await this.repository.save(starshipEntity);
+    return await this.update(savedStarship.id, starship, images);
   }
 
   /**
@@ -112,7 +105,7 @@ export class StarshipsService implements UniqueNameChecker {
     starship: UpdateStarshipDto,
     images?: Express.Multer.File[],
   ): Promise<Starship> {
-    const existingStarship: Starship = await this.repository.findOneBy({ id });
+    const existingStarship: Starship = await this.findOne(id);
     Object.assign(existingStarship, starship);
     if (images) {
       existingStarship.images = await this.commonService.saveImages(images);

@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
-import { Image } from '../images/entities/image.entity';
 import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
@@ -89,14 +88,8 @@ export class VehicleService {
     images?: Express.Multer.File[],
   ): Promise<Vehicle> {
     const vehicleEntity: Vehicle = plainToClass(Vehicle, vehicle);
-    let pImages: Image[] = [];
-
-    if (images) {
-      pImages = await this.commonService.saveImages(images);
-    }
-
-    vehicleEntity.images = pImages;
-    return await this.repository.save(vehicleEntity);
+    const savedVehicle = await this.repository.save(vehicleEntity);
+    return await this.update(savedVehicle.id, vehicle, images);
   }
 
   /**
@@ -111,7 +104,7 @@ export class VehicleService {
     vehicle: UpdateVehicleDTO,
     images?: Express.Multer.File[],
   ): Promise<Vehicle> {
-    const existingVehicle: Vehicle = await this.repository.findOneBy({ id });
+    const existingVehicle: Vehicle = await this.findOne(id);
     Object.assign(existingVehicle, vehicle);
 
     if (images) {

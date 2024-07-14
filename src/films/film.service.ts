@@ -96,12 +96,8 @@ export class FilmService implements UniqueNameChecker {
     images?: Express.Multer.File[],
   ): Promise<Film> {
     const filmEntity: Film = plainToClass(Film, film);
-    console.log(images);
-    if (images) {
-      filmEntity.images = await this.commonService.saveImages(images);
-    }
     const savedFilm = await this.repository.save(filmEntity);
-    return this.update(savedFilm.id, film);
+    return this.update(savedFilm.id, film, images);
   }
 
   /**
@@ -116,7 +112,7 @@ export class FilmService implements UniqueNameChecker {
     film: UpdateFilmDto,
     images?: Express.Multer.File[],
   ): Promise<Film> {
-    const existingFilm: Film = await this.repository.findOneBy({ id });
+    const existingFilm: Film = await this.findOne(id);
     Object.assign(existingFilm, film);
     if (images) {
       existingFilm.images = await this.commonService.saveImages(images);
