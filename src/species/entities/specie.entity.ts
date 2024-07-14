@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { People } from '../../people/entities/people.entity';
 import { Film } from '../../films/entities/film.entity';
 import { Planet } from '../../planets/entities/planet.entity';
