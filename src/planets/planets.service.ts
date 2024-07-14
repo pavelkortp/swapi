@@ -12,7 +12,6 @@ import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { CommonService } from '../common/common.service';
-import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class PlanetsService {
@@ -90,14 +89,13 @@ export class PlanetsService {
     images?: Express.Multer.File[],
   ): Promise<Planet> {
     const planetEntity: Planet = plainToClass(Planet, planet);
-    let pImages: Image[] = [];
 
     if (images) {
-      pImages = await this.commonService.saveImages(images);
+      planetEntity.images = await this.commonService.saveImages(images);
     }
+    const savedPlanet = await this.repository.save(planetEntity);
 
-    planetEntity.images = pImages;
-    return await this.repository.save(planetEntity);
+    return this.update(savedPlanet.id, planet);
   }
 
   /**
@@ -110,7 +108,7 @@ export class PlanetsService {
   async update(
     id: number,
     planet: UpdatePlanetDto,
-    images: Express.Multer.File[],
+    images?: Express.Multer.File[],
   ): Promise<Planet> {
     const existingPlanet: Planet = await this.findOne(id);
     Object.assign(existingPlanet, planet);

@@ -13,7 +13,6 @@ import { UpdatePeopleDto } from './dto/update-people.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
 import { CommonService } from '../common/common.service';
-import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class PeopleService implements UniqueNameChecker {
@@ -97,14 +96,12 @@ export class PeopleService implements UniqueNameChecker {
     images?: Express.Multer.File[],
   ): Promise<People> {
     const peopleEntity: People = plainToClass(People, people);
-    let pImages: Image[] = [];
 
     if (images) {
-      pImages = await this.commonService.saveImages(images);
+      peopleEntity.images = await this.commonService.saveImages(images);
     }
-
-    peopleEntity.images = pImages;
-    return await this.repository.save(peopleEntity);
+    const savedPeople: People = await this.repository.save(peopleEntity);
+    return await this.update(savedPeople.id, people);
   }
 
   /**

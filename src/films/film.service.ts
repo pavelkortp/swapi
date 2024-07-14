@@ -1,5 +1,4 @@
 import {
-  BadGatewayException,
   forwardRef,
   Inject,
   Injectable,
@@ -14,7 +13,6 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { ITEMS_PER_PAGE } from '../app.service';
 import { UniqueNameChecker } from '../declarations';
 import { CommonService } from '../common/common.service';
-import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class FilmService implements UniqueNameChecker {
@@ -98,17 +96,12 @@ export class FilmService implements UniqueNameChecker {
     images?: Express.Multer.File[],
   ): Promise<Film> {
     const filmEntity: Film = plainToClass(Film, film);
-    let fImages: Image[] = [];
-
+    console.log(images);
     if (images) {
-      fImages = await this.commonService.saveImages(images);
+      filmEntity.images = await this.commonService.saveImages(images);
     }
-    filmEntity.images = fImages;
-    try {
-      return await this.repository.save(filmEntity);
-    } catch (error) {
-      throw new BadGatewayException();
-    }
+    const savedFilm = await this.repository.save(filmEntity);
+    return this.update(savedFilm.id, film);
   }
 
   /**
@@ -157,7 +150,7 @@ export class FilmService implements UniqueNameChecker {
       ]);
     }
 
-    await this.repository.save(existingFilm, { reload: true });
+    await this.repository.save(existingFilm);
     return this.findOne(id);
   }
 
