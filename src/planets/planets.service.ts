@@ -36,7 +36,6 @@ export class PlanetsService {
    * @return Array of planets at 0 index and count at index 1
    */
   async findAll(page: number, name?: string): Promise<[Planet[], number]> {
-    console.log(name);
     const skip: number = (page - 1) * ITEMS_PER_PAGE;
     const [items, count] = await this.repository.findAndCount({
       order: { created: 'DESC' },
