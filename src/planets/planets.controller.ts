@@ -17,7 +17,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { PlanetsService } from './planets.service';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
-import { Page } from '../declarations';
 import { GetPlanetDto } from './dto/get-planet.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';

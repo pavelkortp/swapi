@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { ITEMS_PER_PAGE } from '../app.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 import { plainToClass } from 'class-transformer';
 import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';

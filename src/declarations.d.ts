@@ -1,10 +1,3 @@
-import { Planet } from './planets/entities/planet.entity';
-import { Film } from './films/entities/film.entity';
-import { People } from './people/entities/people.entity';
-import { Starship } from './starships/entities/starship.entity';
-import { Specie } from './species/entities/specie.entity';
-import { Vehicle } from './vehicles/entities/vehicle.entity';
-
 declare type EntityName =
   | 'people'
   | 'films'
@@ -18,6 +11,10 @@ declare interface ResponsePage<E> {
   previous: string;
   next: string;
   results: E[];
+}
+
+declare interface Url {
+  toUrl(): string;
 }
 
 declare interface UniqueNameChecker {
@@ -35,10 +32,6 @@ declare type StarWarsEntity =
   | Starship
   | Specie
   | Vehicle;
-
-declare interface ResponseDTO {
-  toLink(name: string, id: number): string;
-}
 
 declare interface Page<E> {
   count: number;

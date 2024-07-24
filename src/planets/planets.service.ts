@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { CreatePlanetDto } from './dto/create-planet.dto';
-import { ITEMS_PER_PAGE } from '../app.service';
 import { CommonService } from '../common/common.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 
 @Injectable()
 export class PlanetsService {

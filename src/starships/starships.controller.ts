@@ -4,7 +4,6 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
-  Inject,
   Param,
   ParseIntPipe,
   Patch,
@@ -16,11 +15,9 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
-import { Page } from '../declarations';
 import { StarshipsService } from './starships.service';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { GetStarshipDto } from './dto/get-starship.dto';
-import { Starship } from './entities/starship.entity';
 import { UpdateStarshipDto } from './dto/update-starship.dto';
 
 @Controller('starships')

@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-export const ITEMS_PER_PAGE = 10;
-export const BASE_URL = 'http://localhost:3000/api/v1';
 @Injectable()
 export class AppService {
   getHello() {

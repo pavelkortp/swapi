@@ -17,7 +17,6 @@ import { CreateFilmDto } from './dto/create-film.dto';
 import { FilmService } from './film.service';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Page } from '../declarations';
 import { GetFilmDto } from './dto/get-film.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';

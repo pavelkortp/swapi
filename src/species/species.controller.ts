@@ -17,7 +17,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
-import { Page } from '../declarations';
 import { GetSpecieDto } from './dto/get-specie.dto';
 import { CreateSpecieDto } from './dto/create-specie.dto';
 import { UpdateSpecieDto } from './dto/update-specie.dto';

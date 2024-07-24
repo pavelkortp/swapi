@@ -10,9 +10,8 @@ import { People } from './entities/people.entity';
 import { CreatePeopleDto } from './dto/create-people.dto';
 import { plainToClass } from 'class-transformer';
 import { UpdatePeopleDto } from './dto/update-people.dto';
-import { ITEMS_PER_PAGE } from '../app.service';
-import { UniqueNameChecker } from '../declarations';
 import { CommonService } from '../common/common.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 
 @Injectable()
 export class PeopleService implements UniqueNameChecker {

@@ -4,11 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UniqueNameChecker } from '../declarations';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Starship } from './entities/starship.entity';
 import { ILike, Repository } from 'typeorm';
-import { ITEMS_PER_PAGE } from '../app.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 import { plainToClass } from 'class-transformer';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { UpdateStarshipDto } from './dto/update-starship.dto';

@@ -20,7 +20,6 @@ import { CreatePeopleDto } from './dto/create-people.dto';
 import { UpdatePeopleDto } from './dto/update-people.dto';
 import { GetPeopleDto } from './dto/get-people.dto';
 import { People } from './entities/people.entity';
-import { Page } from '../declarations';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 
 @ApiTags(`People`)

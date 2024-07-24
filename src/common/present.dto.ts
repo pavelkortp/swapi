@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CommonEntity } from './CommonEntity';
-import { BASE_URL } from '../app.service';
+import { BASE_API_URL } from './constants';
 
 export abstract class PresentDto {
   @ApiProperty()
@@ -19,7 +19,10 @@ export abstract class PresentDto {
   setKeys(c: CommonEntity) {
     for (const key in c) {
       if (Array.isArray(c[key])) {
-        this[key] = c[key].map((e) => this.toLink(key, e.id));
+        this[key] = c[key].map((e) => {
+          const name = e.constructor.name.toLowerCase();
+          return this.toLink(name === 'people' ? name : name + 's', e.id);
+        });
       } else if (key == 'id') {
         continue;
       } else {
@@ -29,6 +32,6 @@ export abstract class PresentDto {
   }
 
   toLink(name: string, id: number): string {
-    return `${BASE_URL}/${name}/${id}/`;
+    return `${BASE_API_URL}/${name}/${id}/`;
   }
 }

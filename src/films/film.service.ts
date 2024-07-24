@@ -5,14 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Film } from './entities/film.entity';
 import { ILike, Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
+import { Film } from './entities/film.entity';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
-import { ITEMS_PER_PAGE } from '../app.service';
-import { UniqueNameChecker } from '../declarations';
 import { CommonService } from '../common/common.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 
 @Injectable()
 export class FilmService implements UniqueNameChecker {

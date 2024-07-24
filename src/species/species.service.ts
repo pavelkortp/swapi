@@ -7,11 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Specie } from './entities/specie.entity';
 import { ILike, Repository } from 'typeorm';
-import { ITEMS_PER_PAGE } from '../app.service';
 import { plainToClass } from 'class-transformer';
 import { UpdateSpecieDto } from './dto/update-specie.dto';
 import { CreateSpecieDto } from './dto/create-specie.dto';
 import { CommonService } from '../common/common.service';
+import { ITEMS_PER_PAGE } from '../common/constants';
 
 @Injectable()
 export class SpeciesService {

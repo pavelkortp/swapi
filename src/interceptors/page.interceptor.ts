@@ -5,9 +5,8 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { ITEMS_PER_PAGE } from '../app.service';
-import { Page, ResponsePage } from '../declarations';
 import { PresentDto } from '../common/present.dto';
+import { BASE_URL, ITEMS_PER_PAGE } from '../common/constants';
 
 @Injectable()
 export class PageInterceptor
@@ -43,10 +42,8 @@ const processMany = (
   const url: string = context.switchToHttp().getRequest().url;
   return {
     count: o.count.toString(),
-    next: nextPage ? `http://localhost:3000${url}/?page=${nextPage}` : 'null',
-    previous: prevPage
-      ? `http://localhost:3000${url}/?page=${prevPage}`
-      : 'null',
+    next: nextPage ? `${BASE_URL}${url}/?page=${nextPage}` : 'null',
+    previous: prevPage ? `${BASE_URL}${url}/?page=${prevPage}` : 'null',
     results: o.items,
   };
 };

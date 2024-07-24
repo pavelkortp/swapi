@@ -16,7 +16,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
-import { Page } from '../declarations';
 import { VehicleService } from './vehicle.service';
 import { GetVehicleDto } from './dto/get-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
