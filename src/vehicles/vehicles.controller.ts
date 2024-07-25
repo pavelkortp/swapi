@@ -13,21 +13,25 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 import { VehicleService } from './vehicle.service';
 import { GetVehicleDto } from './dto/get-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { Entities } from '../common/constants';
+import { VehiclesPageDto } from '../documentation/api/responses/vehicles.page.dto';
+import { PageQueryDoc } from '../documentation/api/requests/page.query.doc.decorator';
 
-@ApiTags('Vehicles')
-@Controller('vehicles')
+@ApiTags(Entities.VEHICLES)
+@Controller(Entities.VEHICLES)
 export class VehiclesController {
   constructor(private service: VehicleService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetVehicleDto })
   async create(
     @Body(ValidationPipe) v: CreateVehicleDto,
     @UploadedFiles(OptionalImagePipe) images?: Express.Multer.File[],
@@ -36,7 +40,9 @@ export class VehiclesController {
   }
 
   @Get()
-  async getAll(
+  @ApiResponse({ type: VehiclesPageDto })
+  @PageQueryDoc(Entities.VEHICLES)
+  async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
   ): Promise<Page<GetVehicleDto>> {
@@ -49,12 +55,14 @@ export class VehiclesController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: GetVehicleDto })
   async getOne(@Param('id', ParseIntPipe) id: number): Promise<GetVehicleDto> {
     return new GetVehicleDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetVehicleDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdateVehicleDTO,

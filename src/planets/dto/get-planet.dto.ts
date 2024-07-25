@@ -30,6 +30,12 @@ export class GetPlanetDto extends PresentDto {
   @ApiProperty()
   population: string;
 
+  @ApiProperty()
+  films: string[];
+
+  @ApiProperty()
+  residents: string[];
+
   constructor(p: Planet) {
     super(p);
     this.setKeys(p);

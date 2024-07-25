@@ -13,7 +13,7 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PeopleService } from './people.service';
 import { CreatePeopleDto } from './dto/create-people.dto';
@@ -21,13 +21,18 @@ import { UpdatePeopleDto } from './dto/update-people.dto';
 import { GetPeopleDto } from './dto/get-people.dto';
 import { People } from './entities/people.entity';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
+import { Entities } from '../common/constants';
+import { PeoplePageDto } from '../documentation/api/responses/people.page.dto';
+import { PageQueryDoc } from '../documentation/api/requests/page.query.doc.decorator';
 
-@ApiTags(`People`)
-@Controller('people')
+@ApiTags(Entities.PEOPLE)
+@Controller(Entities.PEOPLE)
 export class PeopleController {
   constructor(private service: PeopleService) {}
 
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/json')
   @UseInterceptors(FilesInterceptor('images'))
   @ApiResponse({ type: GetPeopleDto })
   async create(
@@ -38,6 +43,8 @@ export class PeopleController {
   }
 
   @Get()
+  @ApiResponse({ type: PeoplePageDto })
+  @PageQueryDoc(Entities.PEOPLE)
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
@@ -50,22 +57,22 @@ export class PeopleController {
     };
   }
 
-  @Get('copy')
-  async copyPeople(): Promise<void> {
-    let response: Response = await fetch('https://swapi.dev/api/people');
-    let res: { next: string; results: CreatePeopleDto[] } =
-      await response.json();
-    do {
-      for (const e of res.results) {
-        // e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
-        e.homeworld = null;
-        await this.service.create(e);
-      }
-
-      response = await fetch(res.next);
-      res = await response.json();
-    } while (res.next);
-  }
+  // @Get('copy')
+  // async copyPeople(): Promise<void> {
+  //   let response: Response = await fetch('https://swapi.dev/api/people');
+  //   let res: { next: string; results: CreatePeopleDto[] } =
+  //     await response.json();
+  //   do {
+  //     for (const e of res.results) {
+  //       // e.homeworld = e.homeworld?.split(/\/(\d+)\/$/)[1];
+  //       e.homeworld = null;
+  //       await this.service.create(e);
+  //     }
+  //
+  //     response = await fetch(res.next);
+  //     res = await response.json();
+  //   } while (res.next);
+  // }
 
   @Get(':id')
   @ApiResponse({ type: GetPeopleDto })

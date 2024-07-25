@@ -39,7 +39,7 @@ export class CreateFilmDto {
   @IsArray()
   @IsStringNumber({ each: true })
   @IsOptional()
-  characters?: number[] = [];
+  characters?: number[];
 
   @ApiPropertyOptional()
   @IsArray()

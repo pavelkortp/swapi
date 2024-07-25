@@ -13,21 +13,25 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlanetsService } from './planets.service';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
 import { GetPlanetDto } from './dto/get-planet.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
+import { Entities } from '../common/constants';
+import { PlanetsPageDto } from '../documentation/api/responses/planets.page.dto';
+import { PageQueryDoc } from '../documentation/api/requests/page.query.doc.decorator';
 
-@ApiTags('planets')
-@Controller('planets')
+@ApiTags(Entities.PLANETS)
+@Controller(Entities.PLANETS)
 export class PlanetsController {
   constructor(private service: PlanetsService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetPlanetDto })
   async create(
     @Body(ValidationPipe) p: CreatePlanetDto,
     @UploadedFiles(OptionalImagePipe)
@@ -37,6 +41,8 @@ export class PlanetsController {
   }
 
   @Get()
+  @ApiResponse({ type: PlanetsPageDto })
+  @PageQueryDoc(Entities.PLANETS)
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name: string,
@@ -50,12 +56,14 @@ export class PlanetsController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: GetPlanetDto })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetPlanetDto> {
     return new GetPlanetDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetPlanetDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) p: UpdatePlanetDto,
@@ -70,20 +78,20 @@ export class PlanetsController {
     await this.service.remove(id);
   }
 
-  @Get('copy')
-  async copyPlanets(): Promise<void> {
-    let response: Response = await fetch('https://swapi.dev/api/planets');
-
-    let res: { next: string; results: CreatePlanetDto[] } =
-      await response.json();
-    console.log(res);
-    do {
-      for (const e of res.results) {
-        await this.service.create(e);
-      }
-
-      response = await fetch(res.next);
-      res = await response.json();
-    } while (res.next);
-  }
+  // @Get('copy')
+  // async copyPlanets(): Promise<void> {
+  //   let response: Response = await fetch('https://swapi.dev/api/planets');
+  //
+  //   let res: { next: string; results: CreatePlanetDto[] } =
+  //     await response.json();
+  //   console.log(res);
+  //   do {
+  //     for (const e of res.results) {
+  //       await this.service.create(e);
+  //     }
+  //
+  //     response = await fetch(res.next);
+  //     res = await response.json();
+  //   } while (res.next);
+  // }
 }

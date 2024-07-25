@@ -14,20 +14,24 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OptionalImagePipe } from '../pipes/optional-image.pipe';
 import { GetSpecieDto } from './dto/get-specie.dto';
 import { CreateSpecieDto } from './dto/create-specie.dto';
 import { UpdateSpecieDto } from './dto/update-specie.dto';
+import { Entities } from '../common/constants';
+import { SpeciesPageDto } from '../documentation/api/responses/species.page.dto';
+import { PageQueryDoc } from '../documentation/api/requests/page.query.doc.decorator';
 
-@ApiTags('species')
-@Controller('species')
+@ApiTags(Entities.SPECIES)
+@Controller(Entities.SPECIES)
 export class SpeciesController {
   constructor(private service: SpeciesService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetSpecieDto })
   async create(
     @Body(ValidationPipe) createSpecieDto: CreateSpecieDto,
     @UploadedFiles(OptionalImagePipe)
@@ -36,22 +40,24 @@ export class SpeciesController {
     return new GetSpecieDto(await this.service.create(createSpecieDto, images));
   }
 
-  @Get('copy')
-  async copySpecies(): Promise<void> {
-    let response: Response = await fetch('https://swapi.dev/api/species');
-    let res: { next: string; results: CreateSpecieDto[] } =
-      await response.json();
-    do {
-      for (const e of res.results) {
-        await this.service.create(e);
-      }
-
-      response = await fetch(res.next);
-      res = await response.json();
-    } while (res.next);
-  }
+  // @Get('copy')
+  // async copySpecies(): Promise<void> {
+  //   let response: Response = await fetch('https://swapi.dev/api/species');
+  //   let res: { next: string; results: CreateSpecieDto[] } =
+  //     await response.json();
+  //   do {
+  //     for (const e of res.results) {
+  //       await this.service.create(e);
+  //     }
+  //
+  //     response = await fetch(res.next);
+  //     res = await response.json();
+  //   } while (res.next);
+  // }
 
   @Get()
+  @ApiResponse({ type: SpeciesPageDto })
+  @PageQueryDoc(Entities.SPECIES)
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('name') name?: string,
@@ -65,12 +71,14 @@ export class SpeciesController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: GetSpecieDto })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetSpecieDto> {
     return new GetSpecieDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
+  @ApiResponse({ type: GetSpecieDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateSpecieDto: UpdateSpecieDto,
