@@ -45,11 +45,12 @@ $ npm install
 ## Create .env file
 Example of .env file
 ```dotenv
-PORT=5432
+DB_PORT=5432
 HOST=localhost
-USER=postgres
-PASSWORD=mysecretpassword
+DB_USER=new_user
+DB_PASSWORD=password
 DATABASE=swapi
+PORT=3000
 ```
 
 ## Running the app
@@ -67,20 +68,10 @@ http://localhost:3000/documentation
 ```
 
 ## Original API
-[swapi](https://swapi.dev/)
+👉 [swapi](https://swapi.dev/)
 
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Support
@@ -89,9 +80,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Pavlo Zhurbytskyi](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Pavlo Zhurbytskyi](https://pavelkortp.github.io/)
+- Telegram - [@Haharon](https://t.me/Haharon)
 
 ## License
 
