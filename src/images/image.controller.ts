@@ -1,15 +1,10 @@
-import {
-  Controller,
-  Get,
-  Inject,
-  Param,
-  ParseIntPipe,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Res } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { Response } from 'express';
 import { Stream } from 'stream';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('image')
 @Controller('images')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
