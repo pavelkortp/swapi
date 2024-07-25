@@ -43,5 +43,8 @@ export class GetSpecieDto extends PresentDto {
     super(s);
     this.setKeys(s);
     this.url = this.toLink('species', s.id);
+    this.homeworld = s.homeworld
+      ? this.toLink('planets', s.homeworld.id)
+      : 'null';
   }
 }
