@@ -2,6 +2,8 @@
 /dist
 /node_modules
 
+package-lock.json
+
 # Logs
 logs
 *.log
@@ -19,13 +21,16 @@ lerna-debug.log*
 /.nyc_output
 
 # IDEs and editors
+/.fleet
 /.idea
+/uploads
 .project
 .classpath
 .c9/
 *.launch
 .settings/
 *.sublime-workspace
+*.env
 
 # IDE - VSCode
 .vscode/*
@@ -34,4 +39,3 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-./package-lock.json

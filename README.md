@@ -23,27 +23,52 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Star-Wars CRUD api representation.
 
 ## Installation
-
 ```bash
 $ npm install
+```
+
+## Installation Database
+* Go to www.postgresql.org to install the db. 
+* Create a user with pass and then complete the .env file with your user and pass.
+* After installing you should create new database (name has no mention, you can use name from my .env example).
+### You can create database using pgadmin interface or query console
+* For linux (<b>Ubuntu</b>)
+    ```bash
+    sudo systemctl start postgresql
+    sudo -u postgres psql
+    CREATE DATABASE swapi;
+    ```
+
+## Create .env file
+Example of .env file
+```dotenv
+PORT=5432
+HOST=localhost
+USER=postgres
+PASSWORD=mysecretpassword
+DATABASE=swapi
 ```
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# database
+$ npm run migrations:run
 
 # watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ npm run start
 ```
+App will be run on 3000 port by default.You can read more about API on 
+```http request
+http://localhost:3000/documentation
+```
+
+## Original API
+[swapi](https://swapi.dev/)
+
 
 ## Test
 
@@ -64,7 +89,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Author - [Pavlo Zhurbytskyi](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
