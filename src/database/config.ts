@@ -1,28 +1,46 @@
+// src/database/config.ts
+
 import * as process from 'process';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 
-config();
+config(); // This is still useful for local development outside of Docker
 
-export const dataSourceOptions: DataSourceOptions = {
+// Base configuration options shared by both environments
+const baseOptions = {
   type: 'postgres',
-  url: process.env.DATABASE_URL,
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  ssl:
-    process.env.NODE_ENV === 'production'
-      ? { rejectUnauthorized: false }
-      : false,
-
   entities: ['dist/**/entities/*.js'],
   migrations: ['dist/database/migrations/*.js'],
-
-  // Be careful with synchronize in production
   synchronize: process.env.NODE_ENV !== 'production',
 };
+
+// Explicitly choose the configuration based on the environment
+let connectionOptions;
+
+if (process.env.DATABASE_URL) {
+  // --- Production/Staging configuration (e.g., on Render) ---
+  console.log('Using DATABASE_URL for connection.');
+  connectionOptions = {
+    ...baseOptions,
+    url: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false, // Required for Render's managed databases
+    },
+  };
+} else {
+  // --- Local Docker development configuration ---
+  console.log('Using DB_HOST for local Docker connection.');
+  connectionOptions = {
+    ...baseOptions,
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  };
+}
+
+export const dataSourceOptions = connectionOptions;
 
 const dataSource = new DataSource(dataSourceOptions);
 
