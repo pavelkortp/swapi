@@ -1,0 +1,18 @@
+name: Deploy to Render
+
+on:
+  # This workflow runs only on pushes to the main branch
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # This job will only run if the "build" job from the "ci.yml" workflow has completed successfully
+    # Note: You must enable "Require status checks to pass before merging" in your branch protection rules for this to be effective.
+    # As a simpler alternative, you can combine the CI and CD steps into one file.
+
+    steps:
+      - name: Trigger Render Deployment
+        # We don't need to check out the code. We just send a request.
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
