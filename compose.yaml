@@ -4,34 +4,28 @@ services:
   app:
     build: .
     ports:
-      - '3000:3000'
+      - '${PORT}:${PORT}'
     depends_on:
-      - db
-    environment:
-      # --- Add these environment variables ---
-      - DB_HOST=db
-      - DB_PORT=5432  # <-- The internal port of the postgres container
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - DB_DATABASE=swapi
-      - PORT=3000
+      db:
+        condition: service_healthy # Use the healthcheck result
+    # The 'env_file' property tells Compose to load variables
+    # from the specified file directly into the container.
+    env_file:
+      - .env
 
   # PostgreSQL Database
   db:
     image: postgres:14-alpine
-    environment:
-      # --- These must match the variables above ---
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=swapi
+    # You can also use env_file here for consistency
+    env_file:
+      - .env
     ports:
-      # Expose port 5433 on your local machine and forward to 5432 in the container
-      - '5433:5432'
+      # Map the host port to the container's internal port
+      - '${HOST_DB_PORT}:${DB_PORT}'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # Add a healthcheck to ensure the app waits until the DB is ready
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
