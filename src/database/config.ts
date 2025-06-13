@@ -1,7 +1,7 @@
 // src/database/config.ts
 
 import * as process from 'process';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 
 config(); // This is still useful for local development outside of Docker
