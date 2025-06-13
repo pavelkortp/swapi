@@ -1,23 +1,21 @@
-// src/database/config.ts
-
 import * as process from 'process';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 
-config(); // This is still useful for local development outside of Docker
+config();
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  // Add the host property! This is the most important change.
-  host: process.env.DB_HOST || 'localhost',
-
-  // The port inside the Docker network is 5432
-  port: parseInt(process.env.DB_PORT) || 5432,
-
-  // Read credentials from environment variables
+  url: process.env.DATABASE_URL,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
 
   entities: ['dist/**/entities/*.js'],
   migrations: ['dist/database/migrations/*.js'],
@@ -27,8 +25,14 @@ export const dataSourceOptions: DataSourceOptions = {
 };
 
 const dataSource = new DataSource(dataSourceOptions);
-console.log('DataSource Initialized with Options:', {
-  ...dataSourceOptions,
-  password: '***',
-});
+
+// Avoid logging sensitive information in production
+if (process.env.NODE_ENV !== 'production') {
+  console.log('DataSource Initialized with Options:', {
+    ...dataSourceOptions,
+    password: dataSourceOptions.password ? '***' : undefined,
+    url: dataSourceOptions.url ? '***' : undefined,
+  });
+}
+
 export default dataSource;
