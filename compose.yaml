@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - '${PORT}:${PORT}'
+      - '3000:3000'
     depends_on:
       db:
         condition: service_healthy # Use the healthcheck result
@@ -21,7 +21,7 @@ services:
       - .env
     ports:
       # Map the host port to the container's internal port
-      - '${HOST_DB_PORT}:${DB_PORT}'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
