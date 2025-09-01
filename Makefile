@@ -84,7 +84,7 @@ db-shell: ## 🗄️ Open a psql shell inside the running database container
 .PHONY: migrate
 migrate: ## 🚀 Run database migrations inside the app container
 	@echo "--- Running database migrations ---"
-	@docker-compose exec app npm run typeorm:run-migrations # Replace with your actual migration script if different
+	@docker-compose exec app npm run migration:run
 	@echo "✅ Migrations complete."
 
 
